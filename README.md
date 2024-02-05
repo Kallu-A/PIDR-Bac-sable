@@ -21,6 +21,10 @@ python3 src/entrypoint.py
 deactivate
 ```
 
+### Stop the current program
+```bash
+python3 -m tdmclient run --stop
+```
 
 ## Test
 ```bash

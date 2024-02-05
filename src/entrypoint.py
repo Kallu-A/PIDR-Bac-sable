@@ -1,14 +1,21 @@
-from thymiodirect import Thymio
+from tdmclient import ClientAsync
 
-from thymioserialports import ThymioSerialPort
+import ProgLoader
 
-port = ThymioSerialPort.default_device()
+if __name__ == "__main__":
 
-print(port)
-th = Thymio(serial_port=port,
-            on_connect=lambda node_id:print(f"{node_id} is connected"))
-th.connect()
+    with ClientAsync(debug=0) as client:
 
+        async def prog():
+            with await client.lock() as node:
+                print(node)
+                error = await node.compile(ProgLoader.thymio_program)
+                if error is not None:
+                    print(f"Compilation error: {error['error_msg']}")
+                else:
+                    error = await node.run()
+                    if error is not None:
+                        print(f"Error {error['error_code']}")
+            print("done")
 
-id = th.first_node()
-th[id]["leds.top"] = [0, 0, 32]
+        client.run_async_program(prog)
