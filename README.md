@@ -9,6 +9,7 @@ Select the appropriate version to your computer and follow the instruction (usef
 ```bash
 python3 -m venv venv
 source venv/bin/activate
+source venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
