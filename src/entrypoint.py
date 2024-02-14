@@ -5,7 +5,7 @@ import ProgLoader
 if __name__ == "__main__":
 
     with ClientAsync(debug=0) as client:
-
+        print(client.port)
         async def prog():
             with await client.lock() as node:
                 print(node)
