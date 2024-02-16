@@ -17,12 +17,12 @@ def detect_aruco(img):
     if img is None:
         print("Error: Could not read the image.")
 
-    imageCopy = img.copy()
-    corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(imageCopy, dic)
+    image_copy = img.copy()
+    corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(image_copy, dic)
 
     #TODO to modify when camera is configure
-    camera_matrix = np.array([[1.0, 0.0, imageCopy.shape[1] / 2],
-                              [0.0, 1.0, imageCopy.shape[0] / 2],
+    camera_matrix = np.array([[1.0, 0.0, image_copy.shape[1] / 2],
+                              [0.0, 1.0, image_copy.shape[0] / 2],
                               [0.0, 0.0, 1.0]], dtype=np.float32)
     dist_coeffs = np.zeros((4, 1), dtype=np.float32)
 
@@ -33,16 +33,16 @@ def detect_aruco(img):
             rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, camera_matrix,
                                                                        dist_coeffs)
             (rvec - tvec).any()  # get rid of that nasty numpy value array error
-            cv2.aruco.drawDetectedMarkers(imageCopy, corners)  # Draw A square around the markers
-            cv2.drawFrameAxes(imageCopy, camera_matrix, dist_coeffs, rvec, tvec, 0.01)  # Draw axis
+            cv2.aruco.drawDetectedMarkers(image_copy, corners)  # Draw A square around the markers
+            cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01)  # Draw axis
 
             c_x = (corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
                 0]) / 4  # X coordinate of marker's center
             c_y = (corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
                 1]) / 4  # Y coordinate of marker's center
-            cv2.putText(imageCopy, "id" + str(ids[i]), (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 225, 250), 2)
+            cv2.putText(image_copy, "id" + str(ids[i]), (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 225, 250), 2)
 
-    return imageCopy
+    return image_copy
 
 
 """    image = cv2.imread(img)
