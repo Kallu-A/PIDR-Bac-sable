@@ -11,8 +11,8 @@ packaging==23.2
 pluggy==1.4.0
 pyserial==3.5
 pytest==7.2.0
-tdmclient==0.1.21
-thymiodirect==0.1.2
+thymiodirect @ file:///home/kallu/Documents/telecom/2A/S2/pidr/PIDR/res/thymiodirect-0.1.2-py3-none-any.whl
+
 tomli==2.0.1
 websockets==12.0
 zeroconf==0.131.0

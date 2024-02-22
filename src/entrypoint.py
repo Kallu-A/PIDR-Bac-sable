@@ -4,50 +4,32 @@
 # Author: Yves Piguet
 #
 # SPDX-License-Identifier: BSD-3-Clause
-from thymiodirect import Thymio
-
-# Test of the communication with Thymio via serial port
-
-from thymio_serial_ports import ThymioSerialPort
-import sys
 import os
 import time
 
+from thymiodirect import Thymio
+from thymiodirect.thymio_serial_ports import ThymioSerialPort
+
 if __name__ == "__main__":
-
-    # check arguments
-    use_tcp = False
     serial_port = None
-    host = None
-    tcp_port = None
-    if len(sys.argv) == 3:
-        # tcp: argv[1] = host, argv[2] = port
-        use_tcp = True
-        host = sys.argv[1]
-        tcp_port = int(sys.argv[2])
-    elif len(sys.argv) == 2:
-        if sys.argv[1] == "--help":
-            print("Usage: {sys.argv[0]} [serial_port | host port]")
-            sys.exit(0)
-        # serial port: argv[1] = serial port
-        serial_port = sys.argv[1]
+    thymio_serial_ports = ThymioSerialPort.get_ports()
+    if len(thymio_serial_ports) > 0:
+        serial_port = thymio_serial_ports[0].device
+        print("Thymio serial ports:")
+        for thymio_serial_port in thymio_serial_ports:
+            print(" ", thymio_serial_port, thymio_serial_port.device)
 
-    # use thymio_serial_ports for default Thymio serial port
-    if not tcp_port and serial_port is None:
-        thymio_serial_ports = ThymioSerialPort.get_ports()
-        if len(thymio_serial_ports) > 0:
-            serial_port = thymio_serial_ports[0].device
-            print("Thymio serial ports:")
-            for thymio_serial_port in thymio_serial_ports:
-                print(" ", thymio_serial_port, thymio_serial_port.device)
 
     # connect
+    use_tcp = False
+    host = None
+    tcp_port = None
     try:
         th = Thymio(use_tcp=use_tcp,
                     serial_port=serial_port,
                     host=host, tcp_port=tcp_port,
                     refreshing_coverage={"prox.horizontal", "button.center"},
-                   )
+                    )
         # constructor options: on_connect, on_disconnect, on_comm_error,
         # refreshing_rate, refreshing_coverage, discover_rate, loop
     except Exception as error:
@@ -70,11 +52,9 @@ if __name__ == "__main__":
     print(f"events: {th.events(id)}")
     print(f"native functions: {th.native_functions(id)[0]}")
 
-    # get a variable
-    th[id]["prox.horizontal"]
 
-    # set a variable (scalar or array)
-    th[id]["leds.top"] = [0, 0, 32]
+    print("\nROBOT ready to roll !\n")
+
 
     # set a function called after new variable values have been fetched
     prox_prev = 0
@@ -86,12 +66,6 @@ if __name__ == "__main__":
             th[node_id]["motor.left.target"] = prox
             th[node_id]["motor.right.target"] = prox
             print(prox)
-            if prox > 5:
-                th[id]["leds.top"] = [0, 32, 0]
-            elif prox < -5:
-                th[id]["leds.top"] = [32, 32, 0]
-            elif abs(prox) < 3:
-                th[id]["leds.top"] = [0, 0, 32]
             prox_prev = prox
         if th[node_id]["button.center"]:
             print("button.center")
