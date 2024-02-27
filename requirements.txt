@@ -11,6 +11,7 @@ packaging==23.2
 pluggy==1.4.0
 pyserial==3.5
 pytest==7.2.0
+#will not work you need to put your own file path here
 thymiodirect @ file:///home/kallu/Documents/telecom/2A/S2/pidr/PIDR/res/thymiodirect-0.1.2-py3-none-any.whl
 
 tomli==2.0.1
