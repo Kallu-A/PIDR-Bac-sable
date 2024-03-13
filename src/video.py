@@ -1,18 +1,15 @@
 import cv2
 
-from aruco_function import detect_aruco, coordinate_aruco, get_coordinate_aruco
+from aruco_function import detect_aruco
 from process_data import process
-
-windowName = "Camera"
-frame_global = None
-size = 15
-destination = None
+from global_var import size, windowName, destination, get_coordinate_aruco, frame_global
 
 
 # handle the click event
 def click_event(event, x, y, flags, params):
+    global destination, frame_global
     # checking for left mouse clicks
-    global destination
+
     if event == cv2.EVENT_LBUTTONDOWN or event == cv2.EVENT_RBUTTONDOWN:
         # displaying the coordinates
         # on the Shell
@@ -34,6 +31,7 @@ def draw_cross(frame, x, y):
 
 
 def open_camera():
+    global destination, frame_global
     camera = cv2.VideoCapture(0)  # ouvrir la cam
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
@@ -41,7 +39,6 @@ def open_camera():
         exit()
 
     print("Veuillez sélectionner la destination et appuyer sur entrée")
-    global frame_global
 
     while True:
         # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
@@ -65,12 +62,12 @@ def open_camera():
                 print("Veuillez sélectionner une destination")
                 continue
 
-            print(coordinate_aruco)
             if get_coordinate_aruco() is None:
                 print("Aucun robot détecté")
                 continue
 
-            process(0, 0, destination[0], destination[1])
+            coordinate_robot = get_coordinate_aruco()
+            process(coordinate_robot[0], coordinate_robot[1], destination[0], destination[1])
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break

@@ -1,14 +1,7 @@
 import cv2
 import numpy as np
 
-id = 100
-dic = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_250)
-path = "aruco_code.png"
-
-coordinate_aruco = None
-
-def get_coordinate_aruco():
-    return coordinate_aruco
+from global_var import path, dic, set_coordinate_aruco
 
 # generate the camera code to identifie
 def generate_aruco():
@@ -19,6 +12,7 @@ def generate_aruco():
 
 
 def detect_aruco(img):
+    global coordinate_aruco
     if img is None:
         print("Error: Could not read the image.")
 
@@ -31,8 +25,7 @@ def detect_aruco(img):
                               [0.0, 0.0, 1.0]], dtype=np.float32)
     dist_coeffs = np.zeros((4, 1), dtype=np.float32)
 
-
-    global coordinate_aruco
+    set_coordinate_aruco(None)
     if ids is not None and len(ids) > 0:
         for i in range(0, len(ids)):
             rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, camera_matrix,
@@ -54,8 +47,7 @@ def detect_aruco(img):
                 1]) / 4  # Y coordinate of marker's center
             cv2.putText(image_copy, "id" + str(ids[i]), (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 225, 250), 2)
             # print("center aruco x:" + str(c_x) + " y:" + str(c_y))
-            coordinate_aruco = (c_x, c_y)
-            print(coordinate_aruco)
+            set_coordinate_aruco((c_x, c_y))
 
     return image_copy
 
