@@ -67,7 +67,7 @@ def open_camera():
                 continue
 
             coordinate_robot = get_coordinate_aruco()
-            process(coordinate_robot[0], coordinate_robot[1], destination[0], destination[1])
+            process(coordinate_robot[0], coordinate_robot[1], coordinate_robot[2], destination[0], destination[1])
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break

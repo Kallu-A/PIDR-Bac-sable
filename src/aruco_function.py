@@ -7,7 +7,7 @@ from global_var import path, dic, set_coordinate_aruco
 def generate_aruco():
     tag = cv2.aruco.generateImageMarker(dic, id, 300)
     cv2.imwrite(path, tag)
-    cv2.imshow("ArUCo Tag", tag)
+    cv2.imshow("Aruco Tag", tag)
     cv2.waitKey(0)
 
 
@@ -39,15 +39,21 @@ def detect_aruco(img):
             (rvec - tvec).any()  # get rid of that nasty numpy value array error
             cv2.aruco.drawDetectedMarkers(image_copy, corners)  # Draw A square around the markers
 
-            cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01)  # Draw axis
+            #cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01)  # Draw axis
 
             c_x = (corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
                 0]) / 4  # X coordinate of marker's center
             c_y = (corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
                 1]) / 4  # Y coordinate of marker's center
-            cv2.putText(image_copy, "id" + str(ids[i]), (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (50, 225, 250), 2)
             # print("center aruco x:" + str(c_x) + " y:" + str(c_y))
-            set_coordinate_aruco((c_x, c_y))
+            R, _ = cv2.Rodrigues(rvecs)
+            _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvecs.reshape(3, 1))))
+            yaw = euler_angles[2]
+            yaw_str = "{:.2f}".format(np.round(yaw, 2).item())
+            cv2.putText(image_copy, "id" + str(ids[i]) + " rotation: " + yaw_str+" deg", (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (50, 225, 250), 2)
+
+            set_coordinate_aruco((c_x, c_y, yaw[0]))
 
     return image_copy
 
