@@ -48,12 +48,12 @@ def detect_aruco(img):
             # print("center aruco x:" + str(c_x) + " y:" + str(c_y))
             R, _ = cv2.Rodrigues(rvecs)
             _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvecs.reshape(3, 1))))
-            yaw = euler_angles[2]
+            yaw = convert_rotation(euler_angles[2][0])
             yaw_str = "{:.2f}".format(np.round(yaw, 2).item())
             cv2.putText(image_copy, "id" + str(ids[i]) + " rotation: " + yaw_str+" deg", (int(c_x), int(c_y)), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (50, 225, 250), 2)
+                        (255, 0, 0), 2)
 
-            set_coordinate_aruco((c_x, c_y, yaw[0]))
+            set_coordinate_aruco((c_x, c_y, yaw))
 
     return image_copy
 
@@ -69,3 +69,11 @@ def detect_aruco(img):
     cv2.imshow("out", image)
 """
 
+# convertion the rotation value in classic trigonometric value
+def convert_rotation(rotation):
+    if 0 <= rotation <= 90:
+        return  90 - rotation
+    if 90 < rotation <= 180:
+        return 450 - rotation
+    if -180 <= rotation < 0:
+        return 90 + (rotation * -1)
