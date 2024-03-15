@@ -74,6 +74,8 @@ def convert_rotation(rotation):
     if 0 <= rotation <= 90:
         return  90 - rotation
     if 90 < rotation <= 180:
-        return 450 - rotation
-    if -180 <= rotation < 0:
+        return - (rotation - 90)
+    if -90 <= rotation < 0:
         return 90 + (rotation * -1)
+    if -180 <= rotation < -90:
+        return -(270 + rotation)

@@ -2,26 +2,27 @@ import cv2
 
 from aruco_function import detect_aruco
 from process_data import process
-from global_var import size, windowName, destination, get_coordinate_aruco, frame_global
+from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination
 
 
 # handle the click event
 def click_event(event, x, y, flags, params):
-    global destination, frame_global
+    global frame_global
     # checking for left mouse clicks
 
     if event == cv2.EVENT_LBUTTONDOWN or event == cv2.EVENT_RBUTTONDOWN:
         # displaying the coordinates
         # on the Shell
-        if destination is not None:
-            if destination[0] - size < x < destination[0] + size:
-                if destination[1] - size < y < destination[1] + size:
-                    destination = None
+        destina = get_destination();
+        if destina is not None:
+            if destina[0] - size < x < destina[0] + size:
+                if destina[1] - size < y < destina[1] + size:
+                    set_destination(None)
                     return
 
         # print("button clicked: x:" + str(x) + " y:" + str(y))
         if frame_global is not None:
-            destination = (x, y)
+            set_destination((x, y))
 
 
 def draw_cross(frame, x, y):
@@ -52,13 +53,14 @@ def open_camera():
         cv2.imshow(windowName, frame)
         frame_global = frame
         cv2.setMouseCallback(windowName, click_event)
-        if destination is not None:
-            cv2.imshow(windowName, draw_cross(frame, destination[0], destination[1]))
+        if get_destination() is not None:
+            destina = get_destination()
+            cv2.imshow(windowName, draw_cross(frame, destina[0], destina[1]))
 
 
 
         if cv2.waitKey(1) & 0xFF == ord('\r'):
-            if destination is None:
+            if get_destination is None:
                 print("Veuillez sélectionner une destination")
                 continue
 
@@ -66,8 +68,8 @@ def open_camera():
                 print("Aucun robot détecté")
                 continue
 
-            coordinate_robot = get_coordinate_aruco()
-            process(coordinate_robot[0], coordinate_robot[1], coordinate_robot[2], destination[0], destination[1])
+
+            process()
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break

@@ -1,10 +1,11 @@
 import time
 
 from robot import Robot
+from src.video import open_camera
 
 if __name__ == '__main__':
-    robot = Robot()
-    robot.move_robot(100, 100)
+    robot = Robot() # init the robot and try to connect to it
+    """robot.move_robot(100, 100)
     time.sleep(1)
     robot.stop_robot()
 
@@ -17,4 +18,7 @@ if __name__ == '__main__':
             prox_prev = prox
         robot.disconnect_button_center()
 
-    robot.add_obs(obs)
+    robot.add_obs(obs)"""
+    open_camera() # open the camera
+
+

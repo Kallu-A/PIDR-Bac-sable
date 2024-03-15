@@ -4,10 +4,21 @@ from thymiodirect import Thymio
 from thymiodirect.thymio_serial_ports import ThymioSerialPort
 
 
-# Adapter pattern of the thymio direct library
-class Robot:
-    def __init__(self):
+def singleton(class_):
+    instances = {}
 
+    def getinstance(*args, **kwargs):
+        if class_ not in instances:
+            instances[class_] = class_(*args, **kwargs)
+        return instances[class_]
+    return getinstance
+
+
+# Adapter pattern of the thymio direct library and work as a singleton to easily get the robot
+@singleton
+class Robot:
+
+    def __init__(self):
         thymio_serial_ports = ThymioSerialPort.get_ports()
         if len(thymio_serial_ports) > 0:
             serial_port = thymio_serial_ports[0].device
@@ -43,10 +54,13 @@ class Robot:
 
         self.alive = True
 
+        pass
+
     # Disconnect the robot
     def disconnet(self):
         print("robot disconnection: ", end='')
         self.thymioPanel.disconnect()
+        self._instance = None
         print("DONE")
 
 

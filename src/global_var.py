@@ -20,3 +20,14 @@ def set_coordinate_aruco(value):
 def get_coordinate_aruco():
     global coordinate_aruco
     return coordinate_aruco
+
+
+def set_destination(value):
+    global destination
+    destination = value
+
+
+def get_destination():
+    global destination
+    return destination
+
