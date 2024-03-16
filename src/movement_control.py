@@ -24,8 +24,8 @@ def rotate_robot(init, target):
 
 # return the degree needed for  the robot to be aligned with the target
 def get_rotate_needed(r_x, r_y, d_x, d_y):
-    oppose = -1 * (d_y - r_y)
-    adjacent = -1 * (r_x - d_x)
+    oppose = abs(d_y - r_y)
+    adjacent = abs(r_x - d_x)
     print("oppose: " + str(oppose))
     print("adjacent: " + str(adjacent))
     return (math.tan(oppose / adjacent))

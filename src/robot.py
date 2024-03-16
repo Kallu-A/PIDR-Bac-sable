@@ -63,6 +63,8 @@ class Robot:
         self._instance = None
         print("DONE")
 
+    def stop(self):
+        self.move_robot(0, 0)
 
     # Add a observer
     def add_obs(self, obs):
