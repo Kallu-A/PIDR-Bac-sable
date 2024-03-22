@@ -2,7 +2,8 @@ import cv2
 
 from aruco_function import detect_aruco
 from process_data import process
-from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread
+from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, \
+    get_path_find
 
 
 # handle the click event
@@ -90,8 +91,7 @@ def open_camera():
 
     # Modify this function to do some stuff on the camera
 def exec_cam(frame):
-   return detect_aruco(frame)
-
+    return detect_aruco(frame)
 
 if __name__ == '__main__':
     open_camera()

@@ -51,6 +51,14 @@ def get_rotate_needed(r_x, r_y, d_x, d_y):
     return val
 
 
+# return a point from a given angle and distance
+def get_point_from_angle(x, y, angle, distance):
+    angle = math.radians(angle)
+    x += distance * math.cos(angle)
+    y -= distance * math.sin(angle)
+    return x, y
+
+
 # return the distance between the robot and the target
 def calculate_distance(r_x, r_y, d_x, d_y):
     return ((r_x - d_x) ** 2 + (r_y - d_y) ** 2) ** 0.5
