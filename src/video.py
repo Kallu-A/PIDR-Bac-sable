@@ -4,6 +4,7 @@ from aruco_function import detect_aruco
 from process_data import process
 from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, \
     get_path_find
+from multiprocessing import freeze_support
 
 
 # handle the click event
@@ -93,5 +94,9 @@ def open_camera():
 def exec_cam(frame):
     return detect_aruco(frame)
 
-if __name__ == '__main__':
+def main():
+    freeze_support()
     open_camera()
+
+if __name__ == '__main__':
+    main()
