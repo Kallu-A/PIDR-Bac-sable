@@ -9,18 +9,28 @@ id = 100
 dic = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_250)
 path = "aruco_code.png"
 windowName = "Camera"
+manager = multiprocessing.Manager()
 
 
+path_find = manager.list()
 frame_global = None
 size = 15
 destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE])
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
 
+
 thread = None
+
+
+def get_path_find():
+    global path_find
+    return path_find
+
 
 def get_thread():
     global thread
     return thread
+
 
 def set_thread(value):
     global thread
