@@ -13,8 +13,7 @@ import math
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-from global_var import get_coordinate_aruco, get_destination, get_obstacles_position, get_path_find, set_path_find, \
-    set_coordinate_aruco, set_destination
+from global_var import get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco
 
 show_animation = True
 pause_time = 0.001
