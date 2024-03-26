@@ -19,3 +19,14 @@ def convert_pixels_to_meters(x, y, scaleX, scaleY):
     j = y * scaleY
     return i, j
 
+
+# convert the case i,j in coordinate x,y in the image (pixel)
+def convert_case_to_pixel(i, j):
+    return i, j
+    # TODO
+
+
+# convert the pixel x,y in the image to case i,j
+def convert_pixel_to_case(x, j):
+    return x, j
+    # TODO
