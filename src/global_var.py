@@ -17,7 +17,6 @@ frame_global = None
 size = 15
 destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE])
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
-obstacles_position = []  # TODO
 
 
 thread = None
@@ -28,9 +27,9 @@ def get_path_find():
     return path_find
 
 
-def set_path_find(path):
+def set_path_find(path_found):
     global path_find
-    path_find = path
+    path_find = path_found
 
 
 def get_thread():
@@ -77,33 +76,5 @@ def get_destination():
     if destination[0] == destination[1] == INVALID_VALUE:
         return None
     return destination
-    # return 50, 50
-
-
-def get_obstacles_position():
-    # TODO : the limits of the image should be obstacles
-    global obstacles_position
-    ox = []
-    oy = []
-    for i in range(-10, 60):
-        ox.append(i)
-        oy.append(-10.0)
-    for i in range(-10, 60):
-        ox.append(60.0)
-        oy.append(i)
-    for i in range(-10, 61):
-        ox.append(i)
-        oy.append(60.0)
-    for i in range(-10, 61):
-        ox.append(-10.0)
-        oy.append(i)
-    for i in range(-10, 40):
-        ox.append(20.0)
-        oy.append(i)
-    for i in range(0, 40):
-        ox.append(40.0)
-        oy.append(60.0 - i)
-    obstacles_position = zip(ox, oy)
-    return obstacles_position
 
 

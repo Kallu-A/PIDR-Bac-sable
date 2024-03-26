@@ -362,39 +362,35 @@ def main():
     sx, sy, rot = get_coordinate_aruco()
     gx, gy = get_destination()
 
-    sx = int (sx)
-    sy = int (sy)
-    gx = int (gx)
-    gy = int (gy)
-    rot = float (rot)
+    sx = int(sx)
+    sy = int(sy)
+    gx = int(gx)
+    gy = int(gy)
+    rot = float(rot)
 
 
     # set obstacle positions
-    obstacles = get_obstacles_position()
     ox = []
     oy = []
-    for obs in obstacles:
-        ox.append(obs[0])
-        oy.append(obs[1])
 
-    # for i in range(-10, 60):
-    #     ox.append(i)
-    #     oy.append(-10.0)
-    # for i in range(-10, 60):
-    #     ox.append(60.0)
-    #     oy.append(i)
-    # for i in range(-10, 61):
-    #     ox.append(i)
-    #     oy.append(60.0)
-    # for i in range(-10, 61):
-    #     ox.append(-10.0)
-    #     oy.append(i)
-    # for i in range(-10, 40):
-    #     ox.append(20.0)
-    #     oy.append(i)
-    # for i in range(0, 40):
-    #     ox.append(40.0)
-    #     oy.append(60.0 - i)
+    for i in range(-10, 60):
+        ox.append(i)
+        oy.append(-10.0)
+    for i in range(-10, 60):
+        ox.append(60.0)
+        oy.append(i)
+    for i in range(-10, 61):
+        ox.append(i)
+        oy.append(60.0)
+    for i in range(-10, 61):
+        ox.append(-10.0)
+        oy.append(i)
+    for i in range(-10, 40):
+        ox.append(20.0)
+        oy.append(i)
+    for i in range(0, 40):
+        ox.append(40.0)
+        oy.append(60.0 - i)
 
     if show_animation:
         plt.plot(ox, oy, ".k")
