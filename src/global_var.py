@@ -3,23 +3,25 @@ import multiprocessing
 
 import cv2
 
+
 INVALID_VALUE = -404
 
 id = 100
 dic = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_250)
 path = "aruco_code.png"
 windowName = "Camera"
-manager = multiprocessing.Manager()
 
-
-path_find = manager.list()
 frame_global = None
 size = 15
 destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE])
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
-
+path_find = []
 
 thread = None
+
+if __name__ == '__main__':
+    manager = multiprocessing.Manager()
+    path_find = manager.list()
 
 
 def get_path_find():
