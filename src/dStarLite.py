@@ -13,7 +13,8 @@ import math
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-from global_var import get_coordinate_aruco, get_destination, get_obstacles_position, get_path_find, set_path_find
+from global_var import get_coordinate_aruco, get_destination, get_obstacles_position, get_path_find, set_path_find, \
+    set_coordinate_aruco, set_destination
 
 show_animation = True
 pause_time = 0.001
@@ -358,8 +359,15 @@ def main():
     # sy = 10  # [m]
     # gx = 50  # [m]
     # gy = 50  # [m]
-    sx, sy = get_coordinate_aruco()
+    sx, sy, rot = get_coordinate_aruco()
     gx, gy = get_destination()
+
+    sx = int (sx)
+    sy = int (sy)
+    gx = int (gx)
+    gy = int (gy)
+    rot = float (rot)
+
 
     # set obstacle positions
     obstacles = get_obstacles_position()
@@ -433,4 +441,6 @@ def main():
 
 
 if __name__ == "__main__":
+    set_destination((50, 50))
+    set_coordinate_aruco((10, 10, 0))
     main()

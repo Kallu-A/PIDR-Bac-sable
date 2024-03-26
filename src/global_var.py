@@ -60,7 +60,6 @@ def get_coordinate_aruco():
     if coordinate_aruco[0] == coordinate_aruco[1] == INVALID_VALUE == coordinate_aruco[2]:
         return None
     return coordinate_aruco
-    # return 10, 10
 
 
 def set_destination(value):

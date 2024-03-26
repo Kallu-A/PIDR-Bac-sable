@@ -13,7 +13,7 @@ pyserial==3.5
 pytest==7.2.0
 #will not work you need to put your own file path here
 thymiodirect @ file:///c/Users/Aurel/OneDrive/Bureau/TelecomNancy/2A/S2/PIDR/PIDR-Bac-sable/res/thymiodirect-0.1.2-py3-none-any.whl
-#file:///home/kallu/Documents/telecom/2A/S2/pidr/PIDR/res/thymiodirect-0.1.2-py3-none-any.whl
+#thyimiodirect @ file:///home/kallu/Documents/telecom/2A/S2/pidr/PIDR/res/thymiodirect-0.1.2-py3-none-any.whl
 #thymiodirect @ file:///C:/Users/colin/OneDrive/Documents/TN/2A/PIDR/res/thymiodirect-0.1.2-py3-none-any.whl
 
 tomli==2.0.1
