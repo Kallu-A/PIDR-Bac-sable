@@ -53,7 +53,7 @@ def detect_aruco(img):
 
             (rvec - tvec).any()  # get rid of that nasty numpy value array error
             cv2.aruco.drawDetectedMarkers(image_copy, corners)  # Draw A square around the markers
-
+            #cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01) # Draw axis
 
             c_x = (corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
                 0]) / 4  # X coordinate of marker's center
@@ -65,7 +65,7 @@ def detect_aruco(img):
             yaw = convert_rotation(euler_angles[2][0])
 
             new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
-            cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
+            #cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
 
             set_coordinate_aruco((c_x, c_y, yaw))
 
