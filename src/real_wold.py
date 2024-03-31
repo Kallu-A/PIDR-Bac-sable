@@ -1,5 +1,4 @@
 from global_var import get_path_find
-import sys
 
 cellsX = 8
 cellsY = 10
@@ -27,8 +26,19 @@ def convert_pixels_to_meters(x, y, scaleX, scaleY):
 
 # convert the case i,j in coordinate x,y in the image (pixel)
 def convert_case_to_pixel(i, j):
-    return i, j
-    # TODO
+    tabX = discretization_X(cellsX, pixelsX)
+    tabY = discretization_Y(cellsY, pixelsY)
+    if tabX[i] == tabX[-1]:
+        x = (pixelsX - 1 + tabX[i]) // 2
+    else:
+        x = (tabX[i] + tabX[i + 1]) // 2
+
+    if tabY[j] == tabY[-1]:
+        y = (pixelsY - 1 + tabY[j]) // 2
+    else:
+        y = (tabY[j] + tabY[j + 1]) // 2
+
+    return x, y
 
 
 # convert the pixel x,y in the image to case i,j
@@ -148,3 +158,4 @@ if __name__ == "__main__":
      print(tabY)
      print(discretization_table(len(tabX), len(tabY), pixelsX, pixelsY))
      print(convert_pixel_to_case(99, 90))
+     print(convert_case_to_pixel(7,9))
