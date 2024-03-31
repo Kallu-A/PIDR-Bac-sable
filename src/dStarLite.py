@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from global_var import get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco
+from threshold.threshold import get_obstacles_pixels_position
 
 show_animation = True
 pause_time = 0.001
@@ -40,7 +41,6 @@ def compare_coordinates(node1: Node, node2: Node):
 
 
 class DStarLite:
-
     # Please adjust the heuristic function (h) if you change the list of
     # possible motions
     motions = [
@@ -350,6 +350,14 @@ class DStarLite:
         print("Path found")
         return True, pathx, pathy
 
+def get_obstacles():
+    obstacles = get_obstacles_pixels_position()
+    ox = []
+    oy = []
+    for obs in obstacles:
+        ox.append(obs[0])
+        oy.append(obs[1])
+    return ox, oy
 
 def main():
 
@@ -367,29 +375,29 @@ def main():
     gy = int(gy)
     rot = float(rot)
 
-
+    ox, oy = get_obstacles()
     # set obstacle positions
-    ox = []
-    oy = []
-
-    for i in range(-10, 60):
-        ox.append(i)
-        oy.append(-10.0)
-    for i in range(-10, 60):
-        ox.append(60.0)
-        oy.append(i)
-    for i in range(-10, 61):
-        ox.append(i)
-        oy.append(60.0)
-    for i in range(-10, 61):
-        ox.append(-10.0)
-        oy.append(i)
-    for i in range(-10, 40):
-        ox.append(20.0)
-        oy.append(i)
-    for i in range(0, 40):
-        ox.append(40.0)
-        oy.append(60.0 - i)
+    # ox = []
+    # oy = []
+    #
+    # for i in range(-10, 60):
+    #     ox.append(i)
+    #     oy.append(-10.0)
+    # for i in range(-10, 60):
+    #     ox.append(60.0)
+    #     oy.append(i)
+    # for i in range(-10, 61):
+    #     ox.append(i)
+    #     oy.append(60.0)
+    # for i in range(-10, 61):
+    #     ox.append(-10.0)
+    #     oy.append(i)
+    # for i in range(-10, 40):
+    #     ox.append(20.0)
+    #     oy.append(i)
+    # for i in range(0, 40):
+    #     ox.append(40.0)
+    #     oy.append(60.0 - i)
 
     if show_animation:
         plt.plot(ox, oy, ".k")
@@ -409,8 +417,11 @@ def main():
                                                  ['.', 'k', 1]]]
         plt.legend(columns, label_column, bbox_to_anchor=(1, 1), title="Key:",
                    fontsize="xx-small")
+        plt.ylim(max(oy), min(oy))
+
         plt.plot()
         plt.pause(pause_time)
+        plt.waitforbuttonpress()
 
     # Obstacles discovered at time = row
     # time = 1, obstacles discovered at (0, 2), (9, 2), (4, 0)
@@ -425,14 +436,15 @@ def main():
     # spoofed_oy = [[], [], [], [], [], [], [], [i for i in range(10, 21)]]
 
     # Obstacles that demostrate large rerouting
-    spoofed_ox = [[], [], [],
-                  [i for i in range(0, 21)] + [0 for _ in range(0, 20)]]
-    spoofed_oy = [[], [], [],
-                  [20 for _ in range(0, 21)] + [i for i in range(0, 20)]]
+    # spoofed_ox = [[], [], [],
+    #               [i for i in range(0, 21)] + [0 for _ in range(0, 20)]]
+    # spoofed_oy = [[], [], [],
+    #               [20 for _ in range(0, 21)] + [i for i in range(0, 20)]]
 
-    dstarlite = DStarLite(ox, oy)
-    dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
-                   spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
+
+    # dstarlite = DStarLite(ox, oy)
+    # dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
+    #                spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
 
 
 if __name__ == "__main__":
