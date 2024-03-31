@@ -442,7 +442,7 @@ def main():
     #               [20 for _ in range(0, 21)] + [i for i in range(0, 20)]]
 
 
-    # dstarlite = DStarLite(ox, oy)
+    dstarlite = DStarLite(ox, oy)
     # dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
     #                spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
 

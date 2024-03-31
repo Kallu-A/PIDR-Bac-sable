@@ -17,6 +17,11 @@ destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE]
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
 path_find = []
 
+cells_x = 10 # number of cells wanted for x axis discretization
+cells_y = 10 # number of cells wanted for y axis discretization
+pixels_x = 0 # number of pixels on x axis
+pixels_y = 0 # number of pixels on y axis
+
 thread = None
 
 if __name__ == '__main__':
@@ -78,5 +83,47 @@ def get_destination():
     if destination[0] == destination[1] == INVALID_VALUE:
         return None
     return destination
+
+
+def get_cells_xy():
+    global cells_x, cells_y
+    return cells_x, cells_y
+
+def set_cells_x(value):
+    global cells_x
+    if value is None:
+        cells_x = INVALID_VALUE
+        return None
+    cells_x = value
+
+
+def set_cells_y(value):
+    global cells_y
+    if value is None:
+        cells_y = INVALID_VALUE
+        return None
+    cells_y = value
+
+
+def get_pixels_xy():
+    global pixels_x, pixels_y
+    return pixels_x, pixels_y
+
+
+def set_pixels_x(value):
+    global pixels_x
+    if value is None:
+        pixels_x = INVALID_VALUE
+        return None
+    pixels_x = value
+
+
+def set_pixels_y(value):
+    global pixels_y
+    if value is None:
+        pixels_y = INVALID_VALUE
+        return None
+    pixels_y = value
+
 
 
