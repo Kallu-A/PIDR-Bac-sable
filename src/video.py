@@ -7,6 +7,8 @@ from global_var import size, windowName, get_coordinate_aruco, set_destination, 
 from multiprocessing import freeze_support
 
 
+show_dis = False
+
 # handle the click event
 def click_event(event, x, y, flags, params):
     global frame_global
@@ -32,9 +34,26 @@ def draw_cross(frame, x, y):
     cv2.line(frame, (x - size, y + size), ( x + size, y - size), (0, 0, 255), 5)
     return frame
 
+def get_indice_line():
+    return [i * size for i in range(1, int(size / 2))]
+
+def get_indice_column():
+    return [i * size for i in range(1, int(size / 2))]
+
+
+def draw_discretisation(frame):
+
+    for i in get_indice_line():
+        cv2.line(frame, (i, 0), (i, frame.shape[0]), (0, 0, 0), 1)
+
+    for i in get_indice_column():
+        cv2.line(frame, (0, i), (frame.shape[1], i), (0, 0, 0), 1)
+
+    return frame
+
 
 def open_camera():
-    global destination, frame_global, thread
+    global destination, frame_global, thread, show_dis
     camera = cv2.VideoCapture(0)  # ouvrir la cam
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
@@ -43,6 +62,7 @@ def open_camera():
 
     print("Veuillez sélectionner la destination et appuyer sur entrée")
     print("Pour arrếter le robot si il est lancé appuyer sur 'q'")
+    print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
 
     while True:
         # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
@@ -52,8 +72,15 @@ def open_camera():
             print("Erreur : Impossible d'ouvrir le flux vidéo")
             break
 
+
         frame = exec_cam(frame)
-        cv2.imshow(windowName, frame)
+
+
+
+        if show_dis:
+            cv2.imshow(windowName, draw_discretisation(frame))
+        else:
+            cv2.imshow(windowName, frame)
         frame_global = frame
         cv2.setMouseCallback(windowName, click_event)
         if get_destination() is not None:
@@ -62,6 +89,9 @@ def open_camera():
             cv2.imshow(windowName, draw_cross(frame, destina[0], destina[1]))
 
         key = cv2.waitKey(1) & 0xFF
+
+        if key == ord('d'):
+            show_dis = not show_dis
 
         if key == ord('\r'):
             if get_destination is None:
@@ -84,8 +114,11 @@ def open_camera():
                 print("Aucun algorithme en cours d'exécution")
                 continue
 
+
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break
+
+        cv2.imshow(windowName, frame)
 
     camera.release()
     cv2.destroyAllWindows()
