@@ -13,8 +13,9 @@ import math
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-from global_var import get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco
-from threshold.threshold import get_obstacles_pixels_position
+from global_var import get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco, set_path_find, get_path_find, set_cells_y, set_pixels_y, set_pixels_x, set_cells_x, get_pixels_xy, get_cells_xy
+from threshold import get_obstacles_pixels_position, get_obstacles_position_grid, get_obstacles_coordinate_grid, \
+    threshold
 
 show_animation = True
 pause_time = 0.001
@@ -58,10 +59,9 @@ class DStarLite:
         # Ensure that within the algorithm implementation all node coordinates
         # are indices in the grid and extend
         # from 0 to abs(<axis>_max - <axis>_min)
-        self.x_min_world = int(min(ox))
-        self.y_min_world = int(min(oy))
-        self.x_max = int(abs(max(ox) - self.x_min_world))
-        self.y_max = int(abs(max(oy) - self.y_min_world))
+        self.x_min_world = 0
+        self.y_min_world = 0
+        self.x_max, self.y_max = get_cells_xy()
         self.obstacles = [Node(x - self.x_min_world, y - self.y_min_world)
                           for x, y in zip(ox, oy)]
         self.obstacles_xy = np.array(
@@ -145,10 +145,10 @@ class DStarLite:
         return self.get_neighbours(u)
 
     def initialize(self, start: Node, goal: Node):
-        self.start.x = start.x - self.x_min_world
-        self.start.y = start.y - self.y_min_world
-        self.goal.x = goal.x - self.x_min_world
-        self.goal.y = goal.y - self.y_min_world
+        self.start.x = start.x
+        self.start.y = start.y
+        self.goal.x = goal.x
+        self.goal.y = goal.y
         if not self.initialized:
             self.initialized = True
             print('Initializing')
@@ -348,10 +348,17 @@ class DStarLite:
                                                                ".c")
                         plt.pause(pause_time)
         print("Path found")
+
+        path = []
+        for i in range(len(pathx)):
+            path.append((pathx[i], pathy[i]))
+        set_path_find(path)
+        print("path_find : ", get_path_find())
         return True, pathx, pathy
 
-def get_obstacles():
-    obstacles = get_obstacles_pixels_position()
+
+def get_obstacles(image_path):
+    obstacles = get_obstacles_coordinate_grid(image_path)
     ox = []
     oy = []
     for obs in obstacles:
@@ -375,7 +382,13 @@ def main():
     gy = int(gy)
     rot = float(rot)
 
-    ox, oy = get_obstacles()
+    # TODO : change image path to frame
+    image_path = "threshold/barre_rouge.jpg"
+
+    ox, oy = get_obstacles(image_path)
+
+    px, py = get_pixels_xy()
+    cx, cy = get_cells_xy()
     # set obstacle positions
     # ox = []
     # oy = []
@@ -404,7 +417,9 @@ def main():
         plt.plot(sx, sy, "og")
         plt.plot(gx, gy, "xb")
         plt.grid(True)
-        plt.axis("equal")
+
+        plt.axis([-1, cx+1, -1, cy+1])
+        plt.ylim(cy + 1, -1)
         label_column = ['Start', 'Goal', 'Path taken',
                         'Current computed path', 'Previous computed path',
                         'Obstacles']
@@ -417,11 +432,8 @@ def main():
                                                  ['.', 'k', 1]]]
         plt.legend(columns, label_column, bbox_to_anchor=(1, 1), title="Key:",
                    fontsize="xx-small")
-        plt.ylim(max(oy), min(oy))
-
         plt.plot()
         plt.pause(pause_time)
-        plt.waitforbuttonpress()
 
     # Obstacles discovered at time = row
     # time = 1, obstacles discovered at (0, 2), (9, 2), (4, 0)
@@ -442,12 +454,22 @@ def main():
     #               [20 for _ in range(0, 21)] + [i for i in range(0, 20)]]
 
 
+    spoofed_ox = []
+    spoofed_oy = []
+
     dstarlite = DStarLite(ox, oy)
-    # dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
-    #                spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
+    dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
+                    spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
 
 
 if __name__ == "__main__":
-    set_destination((50, 50))
-    set_coordinate_aruco((10, 10, 0))
+    image_path = "threshold/barre_rouge.jpg"
+    croped_image = threshold(image_path)
+    rows, cols, _ = croped_image.shape
+    set_pixels_x(cols)
+    set_pixels_y(rows)
+    set_cells_y(20)
+    set_cells_x(20)
+    set_destination((0, 0))
+    set_coordinate_aruco((15, 13, 0))
     main()

@@ -7,7 +7,7 @@ from global_var import size, windowName, get_coordinate_aruco, set_destination, 
 from multiprocessing import freeze_support
 from real_wold import discretization_X, discretization_Y
 
-show_dis = True
+show_dis = False
 
 # handle the click event
 def click_event(event, x, y, flags, params):
