@@ -6,6 +6,7 @@ from global_var import size, windowName, get_coordinate_aruco, set_destination, 
     get_path_find
 from multiprocessing import freeze_support
 
+from real_wold import discretization_X, discretization_Y
 
 show_dis = False
 
@@ -34,19 +35,13 @@ def draw_cross(frame, x, y):
     cv2.line(frame, (x - size, y + size), ( x + size, y - size), (0, 0, 255), 5)
     return frame
 
-def get_indice_line():
-    return [i * size for i in range(1, int(size / 2))]
-
-def get_indice_column():
-    return [i * size for i in range(1, int(size / 2))]
-
-
 def draw_discretisation(frame):
 
-    for i in get_indice_line():
+    for i in discretization_X():
+        print(i)
         cv2.line(frame, (i, 0), (i, frame.shape[0]), (0, 0, 0), 1)
 
-    for i in get_indice_column():
+    for i in discretization_Y():
         cv2.line(frame, (0, i), (frame.shape[1], i), (0, 0, 0), 1)
 
     return frame
