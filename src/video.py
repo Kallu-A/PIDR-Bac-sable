@@ -2,10 +2,9 @@ import cv2
 
 from aruco_function import detect_aruco
 from process_data import process
-from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, \
+from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy, \
     get_path_find
 from multiprocessing import freeze_support
-
 from real_wold import discretization_X, discretization_Y
 
 show_dis = False
@@ -35,13 +34,21 @@ def draw_cross(frame, x, y):
     cv2.line(frame, (x - size, y + size), ( x + size, y - size), (0, 0, 255), 5)
     return frame
 
+def get_indice_line():
+    return [i * size for i in range(1, int(size / 2))]
+
+def get_indice_column():
+    return [i * size for i in range(1, int(size / 2))]
+
+
 def draw_discretisation(frame):
 
-    for i in discretization_X():
-        print(i)
+    for i in discretization_Y():
+        i = int(i)
         cv2.line(frame, (i, 0), (i, frame.shape[0]), (0, 0, 0), 1)
 
-    for i in discretization_Y():
+    for i in discretization_X():
+        i = int(i)
         cv2.line(frame, (0, i), (frame.shape[1], i), (0, 0, 0), 1)
 
     return frame
@@ -50,6 +57,11 @@ def draw_discretisation(frame):
 def open_camera():
     global destination, frame_global, thread, show_dis
     camera = cv2.VideoCapture(0)  # ouvrir la cam
+
+    width = camera.get(3)  # float `width`
+    set_pixels_y(width)
+    height = camera.get(4)  # float `height`
+    set_pixels_x(height)
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")
@@ -67,10 +79,7 @@ def open_camera():
             print("Erreur : Impossible d'ouvrir le flux vidéo")
             break
 
-
         frame = exec_cam(frame)
-
-
 
         if show_dis:
             cv2.imshow(windowName, draw_discretisation(frame))

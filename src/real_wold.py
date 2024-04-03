@@ -1,9 +1,5 @@
-from global_var import get_path_find
+from global_var import get_path_find, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x
 
-cellsX = 8
-cellsY = 10
-pixelsX = 100
-pixelsY = 100
 
 # convert the case i,j (in meters) in coordinate (middle pixel) x,y in the image (pixel)
 def convert_meters_to_pixels(i, j, scaleX, scaleY):
@@ -12,7 +8,6 @@ def convert_meters_to_pixels(i, j, scaleX, scaleY):
     x = i / scaleX
     y = j / scaleY
     return x, y
-
 
 
 # convert the pixel x,y in the image to case i,j (in real world)
@@ -26,6 +21,8 @@ def convert_pixels_to_meters(x, y, scaleX, scaleY):
 
 # convert the case i,j in coordinate x,y in the image (pixel)
 def convert_case_to_pixel(i, j):
+    cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
     tabX = discretization_X()
     tabY = discretization_Y()
     if tabX[i] == tabX[-1]:
@@ -43,6 +40,8 @@ def convert_case_to_pixel(i, j):
 
 # convert the pixel x,y in the image to case i,j
 def convert_pixel_to_case(x, y):
+    cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
     tabX = discretization_X()
     tabY = discretization_Y()
     i = 0
@@ -69,7 +68,12 @@ def convert_pixel_to_case(x, y):
 
 
 def discretization_X():
-    global cellsX, pixelsX
+    # cellsX : number of cells wanted for X axis
+    # pixelsX : number of pixels for the X axis (horizontal)
+
+    cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
+
     tabX = [0] # will contain indexes of the first pixel of separation between cells, for X axis
     if cellsX > pixelsX:
         print("discretization error : cellsX > pixelsX")
@@ -105,7 +109,10 @@ def discretization_X():
 
 
 def discretization_Y():
-    global cellsY, pixelsY
+    # cellsY : number of cells wanted for Y axis
+    # pixelsY : number of pixels for the Y axis (horizontal)
+    cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
     tabY = [0]  # will contain indexes of the first pixel of separation between cells, for X axis
     if cellsY > pixelsY:
         print("discretization error : cellsY > pixelsY")
@@ -140,8 +147,10 @@ def discretization_Y():
 
 
 def discretization_table():
-    global cellsX, pixelsX, cellsY, pixelsY
     # return the discretization grid initialized with 0
+    cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
+
     tabX = discretization_X()
     tabY = discretization_Y()
     nbCellsX = len(tabX)
@@ -151,6 +160,10 @@ def discretization_table():
 
 
 if __name__ == "__main__":
+     set_pixels_x(100)
+     set_pixels_y(100)
+     set_cells_y(10)
+     set_cells_x(9)
      tabX = discretization_X()
      tabY = discretization_Y()
      print(tabX)
