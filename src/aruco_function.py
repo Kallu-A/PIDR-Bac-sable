@@ -11,8 +11,8 @@ color = (85, 94, 235)
 
 
 # generate the camera code to identifie
-def generate_aruco():
-    tag = cv2.aruco.generateImageMarker(dic, id, 300)
+def generate_aruco(id):
+    tag = cv2.aruco.generateImageMarker(dic, id , 200)
     cv2.imwrite(path, tag)
     cv2.imshow("Aruco Tag", tag)
     cv2.waitKey(0)
@@ -65,7 +65,7 @@ def detect_aruco(img):
             yaw = convert_rotation(euler_angles[2][0])
 
             new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
-            #cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
+            cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
 
             set_coordinate_aruco((c_x, c_y, yaw))
 
@@ -103,3 +103,9 @@ def convert_rotation(rotation):
         return 90 + (rotation * -1)
     if -180 <= rotation < -90:
         return -(270 + rotation)
+
+
+
+
+if __name__ == '__main__':
+    generate_aruco(3)
