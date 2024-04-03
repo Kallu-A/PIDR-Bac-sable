@@ -59,15 +59,22 @@ def detect_aruco(img):
                 0]) / 4  # X coordinate of marker's center
             c_y = (corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
                 1]) / 4  # Y coordinate of marker's center
+           
             # print("center aruco x:" + str(c_x) + " y:" + str(c_y))
-            R, _ = cv2.Rodrigues(rvecs)
-            _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvecs.reshape(3, 1))))
-            yaw = convert_rotation(euler_angles[2][0])
+            try:
+                if (rvecs == Size(3, 1) or rvecs == Size(1, 3) or rvecs == Size(3, 3)):
+                    print("cal rot")    
+                    R, _ = cv2.Rodrigues(rvecs)
+                    _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvecs.reshape(3, 1))))
+                    yaw = convert_rotation(euler_angles[2][0])
 
-            new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
-            cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
+                    new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
+                    cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
 
-            set_coordinate_aruco((c_x, c_y, yaw))
+                    set_coordinate_aruco((c_x, c_y, yaw))     
+            except:
+                pass
+           
 
     if len(get_path_find()) > 0:
         draw_path(image_copy)
