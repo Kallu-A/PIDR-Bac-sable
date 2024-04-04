@@ -2,10 +2,12 @@ import cv2
 
 from aruco_function import detect_aruco
 from process_data import process
-from global_var import size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy, \
-    get_path_find
+from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
+    get_obstacles, set_obstacles, \
+                        get_path_find)
 from multiprocessing import freeze_support
 from real_wold import discretization_X, discretization_Y
+from threshold import get_obstacles_position_grid_from_frame
 
 show_dis = False
 
@@ -43,11 +45,11 @@ def get_indice_column():
 
 def draw_discretisation(frame):
 
-    for i in discretization_Y():
+    for i in discretization_X():
         i = int(i)
         cv2.line(frame, (i, 0), (i, frame.shape[0]), (0, 0, 0), 1)
 
-    for i in discretization_X():
+    for i in discretization_Y():
         i = int(i)
         cv2.line(frame, (0, i), (frame.shape[1], i), (0, 0, 0), 1)
 
@@ -59,9 +61,9 @@ def open_camera():
     camera = cv2.VideoCapture(0)  # ouvrir la cam
 
     width = camera.get(3)  # float `width`
-    set_pixels_y(width)
+    set_pixels_x(int(width))
     height = camera.get(4)  # float `height`
-    set_pixels_x(height)
+    set_pixels_y(int(height))
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")
@@ -70,6 +72,7 @@ def open_camera():
     print("Veuillez sélectionner la destination et appuyer sur entrée")
     print("Pour arrếter le robot si il est lancé appuyer sur 'q'")
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
+    print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
 
     while True:
         # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
@@ -118,6 +121,11 @@ def open_camera():
                 print("Aucun algorithme en cours d'exécution")
                 continue
 
+        if key == ord('o'):
+            set_obstacles(get_obstacles_position_grid_from_frame(frame))
+            for i in get_obstacles():
+                print(i)
+            print("\n")
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break

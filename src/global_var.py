@@ -21,6 +21,7 @@ cells_x = 10 # number of cells wanted for x axis discretization
 cells_y = 10 # number of cells wanted for y axis discretization
 pixels_x = 0 # number of pixels on x axis
 pixels_y = 0 # number of pixels on y axis
+obstacles = []
 
 thread = None
 
@@ -89,6 +90,7 @@ def get_cells_xy():
     global cells_x, cells_y
     return cells_x, cells_y
 
+
 def set_cells_x(value):
     global cells_x
     if value is None:
@@ -126,4 +128,11 @@ def set_pixels_y(value):
     pixels_y = value
 
 
+def set_obstacles(obs_grid):
+    global obstacles
+    obstacles = obs_grid
 
+
+def get_obstacles():
+    global obstacles
+    return obstacles

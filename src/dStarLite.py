@@ -13,9 +13,11 @@ import math
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-from global_var import get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco, set_path_find, get_path_find, set_cells_y, set_pixels_y, set_pixels_x, set_cells_x, get_pixels_xy, get_cells_xy
+from global_var import get_obstacles, set_obstacles, get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco, set_path_find, get_path_find, set_cells_y, set_pixels_y, set_pixels_x, set_cells_x, get_pixels_xy, get_cells_xy
 from threshold import get_obstacles_pixels_position, get_obstacles_position_grid, get_obstacles_coordinate_grid, \
     threshold
+from real_wold import convert_pixel_to_case
+
 
 show_animation = True
 pause_time = 0.001
@@ -357,13 +359,15 @@ class DStarLite:
         return True, pathx, pathy
 
 
-def get_obstacles(image_path):
-    obstacles = get_obstacles_coordinate_grid(image_path)
+def get_obs():
+    obstacles = get_obstacles()
     ox = []
     oy = []
-    for obs in obstacles:
-        ox.append(obs[0])
-        oy.append(obs[1])
+    for y in range(len(obstacles)):
+        for x in range(len(obstacles[0])):
+            if obstacles[y][x] == 5:
+                ox.append(x)
+                oy.append(y)
     return ox, oy
 
 def main():
@@ -376,19 +380,23 @@ def main():
     sx, sy, rot = get_coordinate_aruco()
     gx, gy = get_destination()
 
-    sx = int(sx)
-    sy = int(sy)
-    gx = int(gx)
-    gy = int(gy)
+    # sx = int(sx)
+    # sy = int(sy)
+    # gx = int(gx)
+    # gy = int(gy)
+
+    sx, sy = convert_pixel_to_case(int(sx), int(sy))
+    gx, gy = convert_pixel_to_case(int(gx), int(gy))
     rot = float(rot)
 
     # TODO : change image path to frame
-    image_path = "threshold/barre_rouge.jpg"
+    image_path = "threshold/barre-rouge.jpg"
 
-    ox, oy = get_obstacles(image_path)
-
+    ox, oy = get_obs()
     px, py = get_pixels_xy()
     cx, cy = get_cells_xy()
+
+
     # set obstacle positions
     # ox = []
     # oy = []
@@ -416,10 +424,12 @@ def main():
         plt.plot(ox, oy, ".k")
         plt.plot(sx, sy, "og")
         plt.plot(gx, gy, "xb")
-        plt.grid(True)
+
+        plt.grid()
 
         plt.axis([-1, cx+1, -1, cy+1])
         plt.ylim(cy + 1, -1)
+
         label_column = ['Start', 'Goal', 'Path taken',
                         'Current computed path', 'Previous computed path',
                         'Obstacles']
@@ -463,13 +473,14 @@ def main():
 
 
 if __name__ == "__main__":
-    image_path = "threshold/barre_rouge.jpg"
+    image_path = "threshold/barre-rouge.jpg"
     croped_image = threshold(image_path)
     rows, cols, _ = croped_image.shape
     set_pixels_x(cols)
     set_pixels_y(rows)
-    set_cells_y(20)
-    set_cells_x(20)
-    set_destination((0, 0))
-    set_coordinate_aruco((15, 13, 0))
+    set_cells_y(30)
+    set_cells_x(30)
+    set_destination((2, 1))
+    set_coordinate_aruco((599, 599, 0))
+    set_obstacles(get_obstacles_position_grid("threshold/barre-rouge.jpg"))
     main()
