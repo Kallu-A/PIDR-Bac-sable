@@ -7,7 +7,7 @@ with open('matriceCamera.pkl', 'rb') as f:
 with open('VecteurDistorsion.pkl', 'rb') as f:
     vecDis = pickle.load(f)
 
-camera = cv2.VideoCapture(2)  # ouvrir la cam
+camera = cv2.VideoCapture(1)  # ouvrir la cam
 
 if not camera.isOpened() :  # gestion erreur si elle ne l'est pas
     print("Erreur : Impossible d'ouvrir la webcam")

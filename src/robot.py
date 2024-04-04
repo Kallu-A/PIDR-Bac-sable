@@ -1,7 +1,7 @@
 import os
 
 from thymiodirect import Thymio
-from thymiodirect.thymio_serial_ports import ThymioSerialPort
+from ThymioSerialPort import ThymioSerialPort
 
 
 def singleton(class_):

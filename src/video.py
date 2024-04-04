@@ -70,7 +70,7 @@ def open_camera():
         exit()
 
     print("Veuillez sélectionner la destination et appuyer sur entrée")
-    print("Pour arrếter le robot si il est lancé appuyer sur 'q'")
+    print("Pour arrêter le robot si il est lancé appuyer sur 'q'")
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
     print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
 
