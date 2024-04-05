@@ -1,6 +1,6 @@
 import cv2
 
-camera = cv2.VideoCapture(2)  # ouvrir la cam
+camera = cv2.VideoCapture(1)  # ouvrir la cam
 
 n = 0
 
@@ -20,14 +20,14 @@ while True:     # lecture en continu des images pour former un flux vidéo avec 
     if k == 27:
         break
     elif k == ord('s'):
-        cv2.imwrite('images/frame' +str(n)+ '.png', frame)
+        cv2.imwrite('src/calibration/images/frame' +str(n)+ '.png', frame)
         print("Image sauvegardée")
         n+=1
 
     cv2.imshow('Webcam', frame)
 
     c1,c2,_ = frame.shape
-    print("size : " + str(c2) + ","+ str(c1))
+    #print("size : " + str(c2) + ","+ str(c1))
     #if cv2.waitKey(1) & 0xFF == ord('q'):    # waitKey 1 ms et touche 'q' pour quitter
     #    break
 

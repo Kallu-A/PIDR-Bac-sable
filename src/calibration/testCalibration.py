@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import os
 
-taille_damier = (5,4)
+taille_damier = (8,8)
 
 objp = np.zeros((taille_damier[0]*taille_damier[1], 3), np.float32)
 objp[:,:2] = np.mgrid[0:taille_damier[0], 0:taille_damier[1]].T.reshape(-1,2)
