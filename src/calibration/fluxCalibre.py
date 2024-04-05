@@ -1,11 +1,17 @@
 import cv2
 import pickle
+import numpy as np
 
-with open('matriceCamera.pkl', 'rb') as f:
-    matCam = pickle.load(f)
-    
-with open('VecteurDistorsion.pkl', 'rb') as f:
-    vecDis = pickle.load(f)
+#with open('matriceCamera.pkl', 'rb') as f:
+#    matCam = pickle.load(f)
+matCam = np.array([[572.19233691, 0, 406.86429133],
+          [0, 543.70244244, 253.51979463],
+          [0, 0, 1,]])
+
+
+#with open('VecteurDistorsion.pkl', 'rb') as f:
+#    vecDis = pickle.load(f)
+vecDis = np.array([[0.49662178,-0.95387139,-0.0028333,-0.02729056,0.9270895]])
 
 camera = cv2.VideoCapture(1)  # ouvrir la cam
 

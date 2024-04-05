@@ -58,7 +58,7 @@ def draw_discretisation(frame):
 
 def open_camera():
     global destination, frame_global, thread, show_dis
-    camera = cv2.VideoCapture(0)  # ouvrir la cam
+    camera = cv2.VideoCapture(1)  # ouvrir la cam
 
     width = camera.get(3)  # float `width`
     set_pixels_x(int(width))
