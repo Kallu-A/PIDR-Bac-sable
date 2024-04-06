@@ -2,9 +2,10 @@ import cv2
 
 from aruco_function import detect_aruco
 from process_data import process
-from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread, set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
-    get_obstacles, set_obstacles, \
-                        get_path_find)
+from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
+                        set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
+                        get_obstacles, set_obstacles, \
+                        get_path_find, CAMERA_INDICE)
 from multiprocessing import freeze_support
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
@@ -58,7 +59,7 @@ def draw_discretisation(frame):
 
 def open_camera():
     global destination, frame_global, thread, show_dis
-    camera = cv2.VideoCapture(1)  # ouvrir la cam
+    camera = cv2.VideoCapture(CAMERA_INDICE)  # ouvrir la cam
 
     width = camera.get(3)  # float `width`
     set_pixels_x(int(width))
