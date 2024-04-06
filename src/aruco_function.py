@@ -1,5 +1,8 @@
+import pickle
+
 import cv2
 import numpy as np
+from cv2.typing import Size
 
 from global_var import path, dic, set_coordinate_aruco, get_path_find
 from movement_control import get_point_from_angle
@@ -27,21 +30,20 @@ def detect_aruco(img):
 
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(image_copy, dic)
 
-    #TODO to modify when camera is configure
-    camera_matrix = np.array([[1.0, 0.0, image_copy.shape[1] / 2],
-                              [0.0, 1.0, image_copy.shape[0] / 2],
-                              [0.0, 0.0, 1.0]], dtype=np.float32)
-    dist_coeffs = np.zeros((4, 1), dtype=np.float32)
-
+    with open('src/matriceCamera.pkl', 'rb') as f:
+        camera_matrix = pickle.load(f)
+    with open('src/VecteurDistorsion.pkl', 'rb') as f:
+        dist_coeffs = pickle.load(f)
 
 
     set_coordinate_aruco(None)
     if ids is not None and len(ids) > 0:
         for i in range(0, len(ids)):
+
             rvec, tvec, markerPoints = cv2.aruco.estimatePoseSingleMarkers(corners[i], 0.02, camera_matrix,
                                                                        dist_coeffs)
 
-            rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, camera_matrix, dist_coeffs)
+            #rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, 0.05, camera_matrix, dist_coeffs)
 
             corners0 = corners[0][0]
 
@@ -52,28 +54,28 @@ def detect_aruco(img):
             marker_size = distance
 
             (rvec - tvec).any()  # get rid of that nasty numpy value array error
+
             cv2.aruco.drawDetectedMarkers(image_copy, corners)  # Draw A square around the markers
-            #cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01) # Draw axis
+
+            if (ids[i] != 100):
+                continue
+
+            cv2.drawFrameAxes(image_copy, camera_matrix, dist_coeffs, rvec, tvec, 0.01) # Draw axis
 
             c_x = (corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
                 0]) / 4  # X coordinate of marker's center
             c_y = (corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
                 1]) / 4  # Y coordinate of marker's center
-           
-            # print("center aruco x:" + str(c_x) + " y:" + str(c_y))
-            try:
-                if (rvecs == Size(3, 1) or rvecs == Size(1, 3) or rvecs == Size(3, 3)):
-                    print("cal rot")    
-                    R, _ = cv2.Rodrigues(rvecs)
-                    _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvecs.reshape(3, 1))))
-                    yaw = convert_rotation(euler_angles[2][0])
 
-                    new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
-                    cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
+            R, _ = cv2.Rodrigues(rvec)
+            _, _, _, _, _, _, euler_angles = cv2.decomposeProjectionMatrix(np.hstack((R, tvec.reshape(3, 1))))
+            yaw = convert_rotation(euler_angles[2][0])
 
-                    set_coordinate_aruco((c_x, c_y, yaw))     
-            except:
-                pass
+            new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
+            cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
+
+            set_coordinate_aruco((c_x, c_y, yaw))
+
            
 
     if len(get_path_find()) > 0:
@@ -115,4 +117,4 @@ def convert_rotation(rotation):
 
 
 if __name__ == '__main__':
-    generate_aruco(3)
+    generate_aruco(100)

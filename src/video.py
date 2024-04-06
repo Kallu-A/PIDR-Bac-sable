@@ -56,7 +56,7 @@ def draw_discretisation(frame):
 
 def open_camera():
     global destination, frame_global, thread, show_dis
-    camera = cv2.VideoCapture(1)  # ouvrir la cam
+    camera = cv2.VideoCapture(0)  # ouvrir la cam
 
     width = camera.get(3)  # float `width`
     set_pixels_y(width)
@@ -71,6 +71,9 @@ def open_camera():
     print("Pour arrêter le robot si il est lancé appuyer sur 'q'")
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
 
+
+    cv2.namedWindow(windowName)
+    cv2.setMouseCallback(windowName, click_event)
     while True:
         # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
         retour, frame = camera.read()  # lis chaque image, si elle n'y est pas : erreur, sinon on l'affiche
@@ -86,7 +89,7 @@ def open_camera():
         else:
             cv2.imshow(windowName, frame)
         frame_global = frame
-        cv2.setMouseCallback(windowName, click_event)
+
         if get_destination() is not None:
             destina = get_destination()
 
