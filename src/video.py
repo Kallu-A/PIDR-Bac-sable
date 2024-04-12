@@ -5,7 +5,7 @@ from process_data import process
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
                         get_obstacles, set_obstacles, \
-                        get_path_find, CAMERA_INDICE)
+                        get_path_find, CAMERA_INDICE, set_end_point, get_begin_point, get_end_point)
 from multiprocessing import freeze_support
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
@@ -65,6 +65,7 @@ def open_camera():
     set_pixels_x(int(width))
     height = camera.get(4)  # float `height`
     set_pixels_y(int(height))
+    set_end_point((int(width), int(height)))
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")
@@ -74,6 +75,7 @@ def open_camera():
     print("Pour arrêter le robot si il est lancé appuyer sur 'q'")
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
     print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
+    print("Pour définir la taille de l'arène appuyer sur 'a'")
 
 
     cv2.namedWindow(windowName)
@@ -87,6 +89,8 @@ def open_camera():
             break
 
         frame = exec_cam(frame)
+        if (get_begin_point() != (0, 0)) and (get_end_point() != (0, 0)):
+            cv2.rectangle(frame, get_begin_point(), get_end_point(), (0, 255, 0), thickness=1)
 
         if show_dis:
             cv2.imshow(windowName, draw_discretisation(frame))
@@ -103,6 +107,12 @@ def open_camera():
 
         if key == ord('d'):
             show_dis = not show_dis
+
+        if key == ord('a'):
+           if get_thread() is not None:
+                print("Impossible de redéfinir l'arène pendant que l'algorithme tourne")
+                continue
+            # todo détection des aruco mis a jour des variables globales
 
         if key == ord('\r'):
             if get_destination is None:
