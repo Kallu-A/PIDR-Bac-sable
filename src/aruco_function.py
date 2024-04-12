@@ -30,11 +30,14 @@ def detect_aruco(img):
 
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(image_copy, dic)
 
-   # with open('src/matriceCamera.pkl', 'rb') as f:
-   #     camera_matrix = pickle.load(f)
-   # with open('src/VecteurDistorsion.pkl', 'rb') as f:
-   #     dist_coeffs = pickle.load(f)
+    """ with open('src/matriceCamera.pkl', 'rb') as f:
+        camera_matrix = pickle.load(f)
+    with open('src/VecteurDistorsion.pkl', 'rb') as f:
+        dist_coeffs = pickle.load(f) """
 
+
+    camera_matrix = np.load('src/calibration/2cameraMatrice.npy')
+    dist_coeffs = np.load('src/calibration/2distorsionVecteur.npy')
 
     set_coordinate_aruco(None)
     if ids is not None and len(ids) > 0:
