@@ -17,11 +17,15 @@ destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE]
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
 path_find = []
 
-cells_x = 10 # number of cells wanted for x axis discretization
-cells_y = 10 # number of cells wanted for y axis discretization
-pixels_x = 0 # number of pixels on x axis
-pixels_y = 0 # number of pixels on y axis
+cells_x = 10  # number of cells wanted for x axis discretization
+cells_y = 10  # number of cells wanted for y axis discretization
+pixels_x = 0  # number of pixels on x axis
+pixels_y = 0  # number of pixels on y axis
 obstacles = []
+
+# perimeter of the arena
+beginPoint = (0, 0)
+endPoint = (0, 0)
 
 thread = None
 
@@ -136,3 +140,23 @@ def set_obstacles(obs_grid):
 def get_obstacles():
     global obstacles
     return obstacles
+
+
+def get_begin_point():
+    global beginPoint
+    return beginPoint
+
+
+def get_end_point():
+    global endPoint
+    return endPoint
+
+
+def set_begin_point(value):
+    global beginPoint
+    beginPoint = value
+
+
+def set_end_point(value):
+    global endPoint
+    endPoint = value

@@ -35,6 +35,7 @@ def detect_aruco(img):
     with open('src/VecteurDistorsion.pkl', 'rb') as f:
         dist_coeffs = pickle.load(f) """
 
+
     camera_matrix = np.load('src/calibration/2cameraMatrice.npy')
     dist_coeffs = np.load('src/calibration/2distorsionVecteur.npy')
 
