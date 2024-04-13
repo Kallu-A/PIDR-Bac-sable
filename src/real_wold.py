@@ -1,4 +1,4 @@
-from global_var import get_path_find, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x
+from global_var import get_path_find, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x, get_begin_point, get_end_point, set_end_point, set_begin_point
 
 
 # convert the case i,j (in meters) in coordinate (middle pixel) x,y in the image (pixel)
@@ -93,18 +93,20 @@ def discretization_X():
     pixNb = 0
     for i in range(cellsX):
         pixNb += pixelsX // cellsX
-        if pixNb != pixelsX:
-            tabX.append(pixNb)
+        tabX.append(pixNb)
 
-    if pixelsX - tabX[-1] < cellsX:
+    if get_end_point()[0] - tabX[-1] > 0:
         toAdd = 0
         for i in range(len(tabX)):
             tabX[i] += toAdd
             if toAdd < (pixelsX - tabX[-1]):
                 toAdd += 1
+
     if tabX[-1] == pixelsX:
         tabX.pop()
 
+    for i in range(len(tabX)):
+        tabX[i] = tabX[i] + get_begin_point()[0]
     return tabX
 
 
@@ -132,10 +134,9 @@ def discretization_Y():
     pixNb = 0
     for i in range(cellsY):
         pixNb += pixelsY // cellsY
-        if pixNb != pixelsY:
-            tabY.append(pixNb)
+        tabY.append(pixNb)
 
-    if pixelsY - tabY[-1] < cellsY:
+    if get_end_point()[1] - tabY[-1] > 0:
         toAdd = 0
         for i in range(len(tabY)):
             tabY[i] += toAdd
@@ -143,6 +144,9 @@ def discretization_Y():
                 toAdd += 1
     if tabY[-1] == pixelsY:
         tabY.pop()
+
+    for i in range(len(tabY)):
+        tabY[i] = tabY[i] + get_begin_point()[1]
     return tabY
 
 
@@ -155,13 +159,16 @@ def discretization_table():
 
 if __name__ == "__main__":
      set_pixels_x(100)
-     set_pixels_y(100)
-     set_cells_y(10)
-     set_cells_x(9)
+     set_pixels_y(200)
+     set_cells_x(10)
+     set_cells_y(9)
+     set_begin_point((100, 100))
+     set_end_point((200, 400))
      tabX = discretization_X()
      tabY = discretization_Y()
+     print(len(tabX), len(tabY))
      print(tabX)
      print(tabY)
      print(discretization_table())
-     print(convert_pixel_to_case(99, 90))
-     print(convert_case_to_pixel(7,9))
+     #print(convert_pixel_to_case(99, 90))
+     #print(convert_case_to_pixel(7,9))

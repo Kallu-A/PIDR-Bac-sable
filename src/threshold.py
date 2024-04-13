@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from real_wold import discretization_Y, discretization_X, convert_pixel_to_case, discretization_table
-from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y
+from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, get_begin_point, set_end_point, set_begin_point
 
 
 def threshold(image_file_name):
@@ -116,8 +116,8 @@ def get_obstacles_position_grid_from_frame(image):
     obstacles = discretization_table()
     dis_X = discretization_X()
     dis_Y = discretization_Y()
-    dis_X.append(pixelsX)
-    dis_Y.append(pixelsY)
+    dis_X.append(get_end_point()[0])
+    dis_Y.append(get_end_point()[1])
     for y in range(cellsY):
         for x in range(cellsX):
             for pix_y in range(dis_Y[y], dis_Y[y+1]):
@@ -145,12 +145,17 @@ def get_obstacles_coordinate_grid_from_frame(image):
 if __name__ == "__main__":
     # image_path = "threshold/rond_rouge.jpg"
     # croped_image = threshold(image_path)
-    img = cv2.imread("threshold/horizontal-rouge.png")
+    img = cv2.imread("threshold/drapeau-Pologne.png")
     rows, cols, _ = img.shape
-    set_pixels_x(cols)
-    set_pixels_y(rows)
-    set_cells_y(30)
-    set_cells_x(30)
+    print(rows, cols)
+
+    set_pixels_x(600)
+    set_pixels_y(855)
+    set_cells_x(20)
+    set_cells_y(20)
+    set_begin_point((0, 0))
+    set_end_point((600, 855))
+
     # #print(get_obstacles_pixels_position(image_path))
     # #print(get_obstacles_position_grid("threshold/rond_rouge.jpg"))
     # print(get_obstacles_coordinate_grid("threshold/rond_rouge.jpg"))

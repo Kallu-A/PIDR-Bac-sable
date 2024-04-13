@@ -34,7 +34,7 @@ def click_event(event, x, y, flags, params):
 
 def draw_cross(frame, x, y):
     cv2.line(frame, (x - size, y - size), (x + size, y + size), (0, 0, 255), 5)
-    cv2.line(frame, (x - size, y + size), ( x + size, y - size), (0, 0, 255), 5)
+    cv2.line(frame, (x - size, y + size), (x + size, y - size), (0, 0, 255), 5)
     return frame
 
 def get_indice_line():
@@ -45,17 +45,15 @@ def get_indice_column():
 
 
 def draw_discretisation(frame):
-
-    for i in discretization_X():
-        i = int(i)
+    dis_X = discretization_X()
+    dis_Y = discretization_Y()
+    for i in range(len(dis_X)):
         if i != 0:
-            cv2.line(frame, (i + get_begin_point()[0], 0), (i + get_begin_point()[0], frame.shape[0]), (0, 0, 0), 1)
+            cv2.line(frame, (int(dis_X[i]), 0), (int(dis_X[i]), frame.shape[0]), (0, 0, 0), 1)
 
-    for i in discretization_Y():
-        i = int(i)
+    for i in range(len(dis_Y)):
         if i != 0:
-            cv2.line(frame, (0, get_end_point()[1] - i), (frame.shape[1], get_end_point()[1] - i), (0, 0, 0), 1)
-
+            cv2.line(frame, (0, int(dis_Y[i])), (frame.shape[1], int(dis_Y[i])), (0, 0, 0), 1)
     return frame
 
 
@@ -68,6 +66,7 @@ def open_camera():
     set_end_point((int(width), int(height)))
     set_pixels_y(get_end_point()[1] - get_begin_point()[1])
     set_pixels_x(get_end_point()[0] - get_begin_point()[0])
+
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")
