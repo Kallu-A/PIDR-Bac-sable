@@ -65,16 +65,24 @@ def get_obstacles_position_grid(image_path):
     # obstacles[i] = 5 if obstacle in obstacles[i]
     croped_image = threshold(image_path)
     rows, cols, _ = croped_image.shape
-    # pixelsX, pixelsY = get_pixels_xy()
-    # cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
+    cellsX, cellsY = get_cells_xy()
     obstacles = discretization_table()
-    for x in range(cols):
-        for y in range(rows):
-            k = croped_image[y, x]  # k = pixels color rgb
-            if k[0] != 0 and k[1] != 0 and k[2] != 0:
-                i, j = convert_pixel_to_case(x, y)
-                if obstacles[i][j] == 0:
-                    obstacles[i][j] = 5
+    dis_X = discretization_X()
+    dis_Y = discretization_Y()
+    dis_X.append(pixelsX)
+    dis_Y.append(pixelsY)
+    for y in range(cellsY):
+        for x in range(cellsX):
+            for pix_y in range(dis_Y[y], dis_Y[y + 1]):
+                if obstacles[y][x] == 1:
+                    break
+                for pix_x in range(dis_X[x], dis_X[x + 1]):
+                    if obstacles[y][x] == 1:
+                        break
+                    k = croped_image[pix_y, pix_x]  # k = pixels color rgb
+                    if k[0] != 0 and k[1] != 0 and k[2] != 0:
+                        obstacles[y][x] = 1
     return obstacles
 
 
@@ -103,17 +111,24 @@ def get_obstacles_pixels_position_from_frame(image):
 def get_obstacles_position_grid_from_frame(image):
     # obstacles[i] = 1 if obstacle in obstacles[i]
     croped_image = threshold_from_frame(image)
-    rows, cols, _ = croped_image.shape
-    # pixelsX, pixelsY = get_pixels_xy()
-    # cellsX, cellsY = get_cells_xy()
+    pixelsX, pixelsY = get_pixels_xy()
+    cellsX, cellsY = get_cells_xy()
     obstacles = discretization_table()
-    for y in range(rows):
-        for x in range(cols):
-            k = croped_image[y, x]  # k = pixels color rgb
-            if k[0] != 0 and k[1] != 0 and k[2] != 0:
-                i, j = convert_pixel_to_case(x, y)
-                if obstacles[j][i] == 0:
-                    obstacles[j][i] = 1
+    dis_X = discretization_X()
+    dis_Y = discretization_Y()
+    dis_X.append(pixelsX)
+    dis_Y.append(pixelsY)
+    for y in range(cellsY):
+        for x in range(cellsX):
+            for pix_y in range(dis_Y[y], dis_Y[y+1]):
+                if obstacles[y][x] == 1:
+                    break
+                for pix_x in range(dis_X[x], dis_X[x+1]):
+                    if obstacles[y][x] == 1:
+                        break
+                    k = croped_image[pix_y, pix_x] # k = pixels color rgb
+                    if k[0] != 0 and k[1] != 0 and k[2] != 0:
+                        obstacles[y][x] = 1
     return obstacles
 
 

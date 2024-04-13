@@ -5,7 +5,7 @@ from process_data import process
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
                         get_obstacles, set_obstacles, \
-                        get_path_find, CAMERA_INDICE, set_end_point, get_begin_point, get_end_point)
+                        get_path_find, CAMERA_INDICE, set_end_point, get_begin_point, get_end_point, set_begin_point)
 from multiprocessing import freeze_support
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
@@ -48,11 +48,13 @@ def draw_discretisation(frame):
 
     for i in discretization_X():
         i = int(i)
-        cv2.line(frame, (i, 0), (i, frame.shape[0]), (0, 0, 0), 1)
+        if i != 0:
+            cv2.line(frame, (i + get_begin_point()[0], 0), (i + get_begin_point()[0], frame.shape[0]), (0, 0, 0), 1)
 
     for i in discretization_Y():
         i = int(i)
-        cv2.line(frame, (0, i), (frame.shape[1], i), (0, 0, 0), 1)
+        if i != 0:
+            cv2.line(frame, (0, get_end_point()[1] - i), (frame.shape[1], get_end_point()[1] - i), (0, 0, 0), 1)
 
     return frame
 
@@ -62,10 +64,10 @@ def open_camera():
     camera = cv2.VideoCapture(CAMERA_INDICE)  # ouvrir la cam
 
     width = camera.get(3)  # float `width`
-    set_pixels_x(int(width))
     height = camera.get(4)  # float `height`
-    set_pixels_y(int(height))
     set_end_point((int(width), int(height)))
+    set_pixels_y(get_end_point()[1] - get_begin_point()[1])
+    set_pixels_x(get_end_point()[0] - get_begin_point()[0])
 
     if not camera.isOpened():  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")
@@ -89,7 +91,7 @@ def open_camera():
             break
 
         frame = exec_cam(frame)
-        if (get_begin_point() != (0, 0)) and (get_end_point() != (0, 0)):
+        if (get_begin_point() != (0, 0)) or (get_end_point() != (0, 0)):
             cv2.rectangle(frame, get_begin_point(), get_end_point(), (0, 255, 0), thickness=1)
 
         if show_dis:
