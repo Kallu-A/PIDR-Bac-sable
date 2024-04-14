@@ -1,12 +1,13 @@
+from multiprocessing import freeze_support
+
+import time
 import cv2
 
 from aruco_function import detect_aruco, size_arena
-from process_data import process
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
-                        set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
-                        get_obstacles, set_obstacles, \
-                        get_path_find, CAMERA_INDICE, set_end_point, get_begin_point, get_end_point, set_begin_point)
-from multiprocessing import freeze_support
+                        set_thread, set_pixels_x, set_pixels_y, get_obstacles, set_obstacles, \
+                        CAMERA_INDICE, set_end_point, get_begin_point, get_end_point)
+from process_data import process
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
 
@@ -47,13 +48,15 @@ def get_indice_column():
 def draw_discretisation(frame):
     dis_X = discretization_X()
     dis_Y = discretization_Y()
+    begin_point = get_begin_point()
+    end_point = get_end_point()
     for i in range(len(dis_X)):
         if i != 0:
-            cv2.line(frame, (int(dis_X[i]), 0), (int(dis_X[i]), frame.shape[0]), (0, 0, 0), 1)
+            cv2.line(frame, (int(dis_X[i]), begin_point[1]), (int(dis_X[i]), end_point[1]), (0, 0, 0), 1)
 
     for i in range(len(dis_Y)):
         if i != 0:
-            cv2.line(frame, (0, int(dis_Y[i])), (frame.shape[1], int(dis_Y[i])), (0, 0, 0), 1)
+            cv2.line(frame, (begin_point[0], int(dis_Y[i])), (end_point[0], int(dis_Y[i])), (0, 0, 0), 1)
     return frame
 
 
@@ -89,6 +92,8 @@ def open_camera():
             print("Erreur : Impossible d'ouvrir le flux vidéo")
             break
 
+        framecopy = frame.copy()
+
         frame = exec_cam(frame)
         if (get_begin_point() != (0, 0)) or (get_end_point() != (width, height)):
             cv2.rectangle(frame, get_begin_point(), get_end_point(), (0, 255, 0), thickness=1)
@@ -106,20 +111,16 @@ def open_camera():
         else:
             cv2.imshow(windowName, frame)
 
-
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord('d'):
             show_dis = not show_dis
 
         if key == ord('a'):
-            if show_dis:
-                print("Impossible de redéfinir l'arène pendant que la discrétisation est affichée")
-                continue
             if get_thread() is not None:
                 print("Impossible de redéfinir l'arène pendant que l'algorithme tourne")
                 continue
-            size_arena(frame, width, height)
+            size_arena(framecopy, width, height)
 
         if key == ord('\r'):
             if get_destination is None:
