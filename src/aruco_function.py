@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 from cv2.typing import Size
 
-from global_var import path, dic, set_coordinate_aruco, get_path_find
+from global_var import path, dic, set_coordinate_aruco, get_path_find, set_begin_point, set_end_point, get_end_point, \
+    get_begin_point
 from movement_control import get_point_from_angle
 from real_wold import convert_case_to_pixel
 
@@ -85,6 +86,36 @@ def detect_aruco(img):
         draw_path(image_copy)
     return image_copy
 
+def size_arena(frame, width, height):
+    corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(frame, dic)
+    if ids is not None and len(ids):
+        if len(ids) == 1 or len(ids) > 2:
+            print("Erreur: il faut 2 code aruco")
+            return
+
+        i = 0
+        first_x = int((corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
+            0]) / 4)  # X coordinate of marker's center
+        first_y = int((corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
+            1]) / 4)  # Y coordinate of marker's center
+
+        i = 1
+        second_x = int((corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
+            0]) / 4)  # X coordinate of marker's center
+        second_y= int((corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
+            1]) / 4)  # Y coordinate of marker's center
+
+        set_begin_point((min(first_x, second_x), min(first_y, second_y)) )
+        set_end_point((max(first_x, second_x), max(first_y, second_y)) )
+        return
+
+    if (get_begin_point() == (0, 0) and get_end_point() == (width, height)):
+        return
+
+    print("Réinitialisation de l'arène")
+    set_begin_point((0, 0))
+    set_end_point((int(width), int(height)))
+
 
 def draw_path(img):
     # draw a line between each point
@@ -108,7 +139,7 @@ def draw_path(img):
 # convertion the rotation value in classic trigonometric value
 def convert_rotation(rotation):
     if 0 <= rotation <= 90:
-        return  90 - rotation
+        return 90 - rotation
     if 90 < rotation <= 180:
         return - (rotation - 90)
     if -90 <= rotation < 0:

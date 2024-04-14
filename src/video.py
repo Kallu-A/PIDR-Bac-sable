@@ -1,6 +1,6 @@
 import cv2
 
-from aruco_function import detect_aruco
+from aruco_function import detect_aruco, size_arena
 from process_data import process
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_pixels_xy, get_cells_xy,
@@ -90,13 +90,10 @@ def open_camera():
             break
 
         frame = exec_cam(frame)
-        if (get_begin_point() != (0, 0)) or (get_end_point() != (0, 0)):
+        if (get_begin_point() != (0, 0)) or (get_end_point() != (width, height)):
             cv2.rectangle(frame, get_begin_point(), get_end_point(), (0, 255, 0), thickness=1)
 
-        if show_dis:
-            cv2.imshow(windowName, draw_discretisation(frame))
-        else:
-            cv2.imshow(windowName, frame)
+
         frame_global = frame
 
         if get_destination() is not None:
@@ -104,16 +101,25 @@ def open_camera():
 
             cv2.imshow(windowName, draw_cross(frame, destina[0], destina[1]))
 
+        if show_dis:
+            cv2.imshow(windowName, draw_discretisation(frame))
+        else:
+            cv2.imshow(windowName, frame)
+
+
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord('d'):
             show_dis = not show_dis
 
         if key == ord('a'):
-           if get_thread() is not None:
+            if show_dis:
+                print("Impossible de redéfinir l'arène pendant que la discrétisation est affichée")
+                continue
+            if get_thread() is not None:
                 print("Impossible de redéfinir l'arène pendant que l'algorithme tourne")
                 continue
-            # todo détection des aruco mis a jour des variables globales
+            size_arena(frame, width, height)
 
         if key == ord('\r'):
             if get_destination is None:
@@ -141,6 +147,7 @@ def open_camera():
             for i in get_obstacles():
                 print(i)
             print("\n")
+
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break
