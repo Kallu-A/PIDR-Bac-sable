@@ -5,7 +5,7 @@ import numpy as np
 from cv2.typing import Size
 
 from global_var import path, dic, set_coordinate_aruco, get_path_find, set_begin_point, set_end_point, get_end_point, \
-    get_begin_point
+    get_begin_point, set_pixels_y, set_pixels_x
 from movement_control import get_point_from_angle
 from real_wold import convert_case_to_pixel
 
@@ -107,6 +107,8 @@ def size_arena(frame, width, height):
 
         set_begin_point((min(first_x, second_x), min(first_y, second_y)) )
         set_end_point((max(first_x, second_x), max(first_y, second_y)) )
+        set_pixels_y(get_end_point()[1] - get_begin_point()[1])
+        set_pixels_x(get_end_point()[0] - get_begin_point()[0])
         return
 
     if (get_begin_point() == (0, 0) and get_end_point() == (width, height)):
@@ -115,6 +117,8 @@ def size_arena(frame, width, height):
     print("Réinitialisation de l'arène")
     set_begin_point((0, 0))
     set_end_point((int(width), int(height)))
+    set_pixels_y(get_end_point()[1] - get_begin_point()[1])
+    set_pixels_x(get_end_point()[0] - get_begin_point()[0])
 
 
 def draw_path(img):
