@@ -168,7 +168,7 @@ def get_obstacles_coordinate_grid_from_frame(image):
 if __name__ == "__main__":
     # image_path = "threshold/rond_rouge.jpg"
     # croped_image = threshold(image_path)
-    img = cv2.imread("threshold/drapeau-Pologne.png")
+    img = cv2.imread("src/threshold/drapeau-Pologne.png")
     rows, cols, _ = img.shape
     print(rows, cols)
 
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     # #print(get_obstacles_pixels_position(image_path))
     # #print(get_obstacles_position_grid("threshold/rond_rouge.jpg"))
     # print(get_obstacles_coordinate_grid("threshold/rond_rouge.jpg"))
-    for i in get_obstacles_position_grid_from_frame(img):
+    for i in get_obstacles_position_grid_from_frame(img, False):
         print(i)
 
 
