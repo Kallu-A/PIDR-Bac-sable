@@ -153,7 +153,7 @@ def discretization_Y():
 def discretization_table():
     # return the discretization grid initialized with 0
     cellsX, cellsY = get_cells_xy()
-    table = [[0 for col in range(cellsX)] for row in range(cellsY)]
+    table = [[False for col in range(cellsX)] for row in range(cellsY)]
     return table
 
 
