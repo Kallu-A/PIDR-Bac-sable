@@ -23,6 +23,7 @@ pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
 obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
 newly_obstacles = False  # if obstacles have been newly modifed
+newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have been newly modifed
 
 # perimeter of the arena
 beginPoint = (0, 0)
@@ -176,3 +177,11 @@ def get_newly_obstacles():
 def set_newly_obstacles(value):
     global newly_obstacles
     newly_obstacles = value
+
+def get_updated_obstacles():
+    global newly_updated_obstacles
+    return newly_updated_obstacles.value
+
+def set_updated_obstacles(value):
+    global newly_updated_obstacles
+    newly_updated_obstacles.value = value

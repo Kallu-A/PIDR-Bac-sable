@@ -3,7 +3,7 @@ import threading
 import cv2
 
 from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, \
-    set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles
+     set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles
 from real_wold import discretization_Y, discretization_X, discretization_table
 
 
@@ -71,11 +71,26 @@ def runtime_calcul_loop(image, flags):
                         obstacles[y][x] = True
                         break
 
-    #obstacles = dilatation(obstacles)
+    obstacles = dilatation(obstacles)
+
+    if not equal_tab(obstacles, get_obstacles()):
+        set_updated_obstacles(True)
 
     set_obstacles(obstacles)
     if flags == True:
         set_newly_obstacles(True)
+
+
+def equal_tab(obstacle1, obstacle2):
+    if len(obstacle1) != len(obstacle2):
+        return False
+
+    for i in range(len(obstacle1)):
+        for j in range(len(obstacle1[0])):
+            if obstacle1[i][j] != obstacle2[i][j]:
+                return False
+    return True
+
 
 
 def voisin_true(tableau, k, j):
@@ -139,9 +154,6 @@ if __name__ == "__main__":
     dil = dilatation(get_obstacles())
     for i in dil:
         print(i)
-
-
-
 
 
 
