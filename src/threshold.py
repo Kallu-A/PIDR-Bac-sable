@@ -1,3 +1,5 @@
+import threading
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -118,17 +120,34 @@ def get_obstacles_position_grid_from_frame(image):
     dis_Y = discretization_Y()
     dis_X.append(get_end_point()[0])
     dis_Y.append(get_end_point()[1])
-    for y in range(cellsY):
-        for x in range(cellsX):
-            for pix_y in range(dis_Y[y], dis_Y[y+1]):
-                if obstacles[y][x] == 1:
-                    break
-                for pix_x in range(dis_X[x], dis_X[x+1]):
+
+    def process_cells(start_y, end_y):
+        for y in range(start_y, end_y):
+            for x in range(cellsX):
+                for pix_y in range(dis_Y[y], dis_Y[y + 1]):
                     if obstacles[y][x] == 1:
                         break
-                    k = croped_image[pix_y, pix_x] # k = pixels color rgb
-                    if k[0] != 0 and k[1] != 0 and k[2] != 0:
-                        obstacles[y][x] = 1
+                    for pix_x in range(dis_X[x], dis_X[x + 1]):
+                        if obstacles[y][x] == 1:
+                            break
+                        k = croped_image[pix_y, pix_x]
+                        if k[0] != 0 and k[1] != 0 and k[2] != 0:
+                            obstacles[y][x] = 1
+
+    num_threads = 4  # Adjust the number of threads as needed
+    threads = []
+    chunk_size = cellsY // num_threads
+
+    for i in range(num_threads):
+        start_y = i * chunk_size
+        end_y = (i + 1) * chunk_size if i < num_threads - 1 else cellsY
+        thread = threading.Thread(target=process_cells, args=(start_y, end_y))
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
     return obstacles
 
 
