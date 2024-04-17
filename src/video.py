@@ -85,6 +85,7 @@ def open_camera():
 
     cv2.namedWindow(windowName)
     cv2.setMouseCallback(windowName, click_event)
+    start_time = time.time()
     while True:
         # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
         retour, frame = camera.read()  # lis chaque image, si elle n'y est pas : erreur, sinon on l'affiche
@@ -118,6 +119,10 @@ def open_camera():
             print("\n")
             set_newly_obstacles(False)
 
+        if time.time() - start_time >= 5:
+            # Perform the operation every 5 seconds
+            get_obstacles_position_grid_from_frame(frame, False)
+            start_time = time.time()
 
         key = cv2.waitKey(1) & 0xFF
 
@@ -152,7 +157,7 @@ def open_camera():
                 continue
 
         if key == ord('o'):
-            get_obstacles_position_grid_from_frame(frame)
+            get_obstacles_position_grid_from_frame(frame, True)
 
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:

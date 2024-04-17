@@ -111,10 +111,10 @@ def get_obstacles_pixels_position_from_frame(image):
 
 
 # Make the obstacle detection in a process
-def get_obstacles_position_grid_from_frame(image):
-    threading.Thread(target=runtime_calcul_loop, args=(image,)).start()
+def get_obstacles_position_grid_from_frame(image, flags):
+    threading.Thread(target=runtime_calcul_loop, args=(image, flags)).start()
 
-def runtime_calcul_loop(image):
+def runtime_calcul_loop(image, flags):
     # obstacles[i] = 1 if obstacle in obstacles[i]
     croped_image = threshold_from_frame(image)
     pixelsX, pixelsY = get_pixels_xy()
@@ -152,7 +152,8 @@ def runtime_calcul_loop(image):
         thread.join()
 
     set_obstacles(obstacles)
-    set_newly_obstacles(True)
+    if flags == True:
+        set_newly_obstacles(True)
 
 def get_obstacles_coordinate_grid_from_frame(image):
     grid = get_obstacles_position_grid_from_frame(image)
