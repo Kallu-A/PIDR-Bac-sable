@@ -58,6 +58,31 @@ def draw_discretisation(frame):
     for i in range(len(dis_Y)):
         if i != 0:
             cv2.line(frame, (begin_point[0], int(dis_Y[i])), (end_point[0], int(dis_Y[i])), (0, 0, 0), 1)
+
+    return fill_obstacle(frame)
+    #return frame
+
+
+def fill_obstacle(frame):
+    obstacles = get_obstacles()
+    dis_X = discretization_X()
+    dis_Y = discretization_Y()
+    color = (0, 0, 0)
+    for i in range(len(obstacles)):
+            for j in range(len(obstacles[0])):
+                if obstacles[i][j] == 1:
+                    x = dis_X[j]
+                    y = dis_Y[i]
+                    if (j + 1 >= len(obstacles[0])):
+                        max_X = get_end_point()[0]
+                    else:
+                        max_X = dis_X[j + 1]
+                    if (i + 1 >= len(obstacles)):
+                        max_Y = get_end_point()[1]
+                    else:
+                        max_Y = dis_Y[i + 1]
+                    cv2.line(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 1)
+                    cv2.line(frame, (int(max_X), int(y)), (int(x), int(max_Y)), color, 1)
     return frame
 
 
@@ -123,6 +148,7 @@ def open_camera():
                     else:
                         print("0 ", end="")
                 print("|")
+            print()
             set_newly_obstacles(False)
 
         if time.time() - start_time >= 5:
