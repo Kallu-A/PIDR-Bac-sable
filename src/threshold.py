@@ -124,11 +124,10 @@ def get_obstacles_position_grid_from_frame(image):
                 if obstacles[y][x] == 1:
                     break
                 for pix_x in range(dis_X[x], dis_X[x+1]):
-                    if obstacles[y][x] == 1:
-                        break
                     k = croped_image[pix_y, pix_x] # k = pixels color rgb
                     if k[0] != 0 and k[1] != 0 and k[2] != 0:
                         obstacles[y][x] = 1
+                        break
     return obstacles
 
 
