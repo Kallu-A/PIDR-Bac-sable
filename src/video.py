@@ -7,7 +7,7 @@ from aruco_function import detect_aruco, size_arena
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, set_obstacles, \
                         CAMERA_INDICE, set_end_point, get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles)
+                        set_newly_obstacles, get_updated_obstacles, set_updated_obstacles)
 from process_data import process
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame

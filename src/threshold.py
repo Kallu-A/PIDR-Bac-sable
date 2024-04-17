@@ -3,7 +3,7 @@ import threading
 import cv2
 
 from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, \
-    set_end_point, set_begin_point, set_obstacles, set_newly_obstacles
+    set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles
 from real_wold import discretization_Y, discretization_X, discretization_table
 
 
@@ -12,7 +12,7 @@ def threshold(image_file_name):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     assert img_hsv is not None, "file could not be read, check with os.path.exists()"
     # hist = cv2.calcHist([img],[0],None,[256],[0,256])
-    # plt.hist(img.ravel(),256,[0,256]); plt.show()
+    # plt.hist(img.ravel(),256,[0,256]è); plt.show()
 
     # Gen lower mask (0-5) and upper mask (175-180) of RED
     mask1 = cv2.inRange(img_hsv, (0, 50, 20), (5, 255, 255))
@@ -151,9 +151,24 @@ def runtime_calcul_loop(image, flags):
     for thread in threads:
         thread.join()
 
+    if not equal_tab(obstacles, get_obstacles()):
+        set_updated_obstacles(True)
+
     set_obstacles(obstacles)
     if flags == True:
         set_newly_obstacles(True)
+
+
+def equal_tab(obstacle1, obstacle2):
+    if len(obstacle1) != len(obstacle2):
+        return False
+
+    for i in range(len(obstacle1)):
+        for j in range(len(obstacle1[0])):
+            if obstacle1[i][j] != obstacle2[i][j]:
+                return False
+    return True
+
 
 def get_obstacles_coordinate_grid_from_frame(image):
     grid = get_obstacles_position_grid_from_frame(image)
