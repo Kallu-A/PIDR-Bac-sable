@@ -132,11 +132,10 @@ def runtime_calcul_loop(image):
                     if obstacles[y][x] == 1:
                         break
                     for pix_x in range(dis_X[x], dis_X[x + 1]):
-                        if obstacles[y][x] == 1:
-                            break
                         k = croped_image[pix_y, pix_x]
                         if k[0] != 0 and k[1] != 0 and k[2] != 0:
                             obstacles[y][x] = 1
+                            break
 
     num_threads = 4  # Adjust the number of threads as needed
     threads = []
