@@ -21,7 +21,7 @@ cells_x = 10  # number of cells wanted for x axis discretization
 cells_y = 10  # number of cells wanted for y axis discretization
 pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
-obstacles = []
+obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
 newly_obstacles = False  # if obstacles have been newly modifed
 
 # perimeter of the arena
@@ -135,12 +135,19 @@ def set_pixels_y(value):
 
 def set_obstacles(obs_grid):
     global obstacles
-    obstacles = obs_grid
+    obstacles_np = get_obstacles()
+    for i in range(cells_x):
+        for j in range(cells_y):
+            obstacles_np[i][j] = obs_grid[i][j]
 
 
 def get_obstacles():
     global obstacles
-    return obstacles
+    import numpy as np
+    obstacles_np = np.frombuffer(obstacles.get_obj(), dtype=np.bool_).reshape(
+        (cells_x, cells_y))
+
+    return obstacles_np
 
 
 def get_begin_point():

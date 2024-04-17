@@ -114,9 +114,15 @@ def open_camera():
             cv2.imshow(windowName, frame)
 
         if get_newly_obstacles():
-            for i in get_obstacles():
-                print(i)
-            print("\n")
+            obstacles = get_obstacles()
+            for i in range(len(obstacles)):
+                print("| ", end="")
+                for j in range(len(obstacles[0])):
+                    if obstacles[i][j] == 1:
+                        print("1 ", end="")
+                    else:
+                        print("0 ", end="")
+                print("|")
             set_newly_obstacles(False)
 
         if time.time() - start_time >= 5:
