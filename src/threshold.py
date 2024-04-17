@@ -1,10 +1,10 @@
 import threading
 
 import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-from real_wold import discretization_Y, discretization_X, convert_pixel_to_case, discretization_table
-from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, get_begin_point, set_end_point, set_begin_point
+
+from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, \
+    set_end_point, set_begin_point, set_obstacles, set_newly_obstacles
+from real_wold import discretization_Y, discretization_X, discretization_table
 
 
 def threshold(image_file_name):
@@ -110,7 +110,11 @@ def get_obstacles_pixels_position_from_frame(image):
     return obstacles
 
 
+# Make the obstacle detection in a process
 def get_obstacles_position_grid_from_frame(image):
+    threading.Thread(target=runtime_calcul_loop, args=(image,)).start()
+
+def runtime_calcul_loop(image):
     # obstacles[i] = 1 if obstacle in obstacles[i]
     croped_image = threshold_from_frame(image)
     pixelsX, pixelsY = get_pixels_xy()
@@ -148,8 +152,8 @@ def get_obstacles_position_grid_from_frame(image):
     for thread in threads:
         thread.join()
 
-    return obstacles
-
+    set_obstacles(obstacles)
+    set_newly_obstacles(True)
 
 def get_obstacles_coordinate_grid_from_frame(image):
     grid = get_obstacles_position_grid_from_frame(image)

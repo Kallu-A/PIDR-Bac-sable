@@ -22,6 +22,7 @@ cells_y = 10  # number of cells wanted for y axis discretization
 pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
 obstacles = []
+newly_obstacles = False  # if obstacles have been newly modifed
 
 # perimeter of the arena
 beginPoint = (0, 0)
@@ -160,3 +161,11 @@ def set_begin_point(value):
 def set_end_point(value):
     global endPoint
     endPoint = value
+
+def get_newly_obstacles():
+    global newly_obstacles
+    return newly_obstacles
+
+def set_newly_obstacles(value):
+    global newly_obstacles
+    newly_obstacles = value

@@ -6,7 +6,8 @@ import cv2
 from aruco_function import detect_aruco, size_arena
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, set_obstacles, \
-                        CAMERA_INDICE, set_end_point, get_begin_point, get_end_point)
+                        CAMERA_INDICE, set_end_point, get_begin_point, get_end_point, get_newly_obstacles,
+                        set_newly_obstacles)
 from process_data import process
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
@@ -111,6 +112,13 @@ def open_camera():
         else:
             cv2.imshow(windowName, frame)
 
+        if get_newly_obstacles():
+            for i in get_obstacles():
+                print(i)
+            print("\n")
+            set_newly_obstacles(False)
+
+
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord('d'):
@@ -144,10 +152,7 @@ def open_camera():
                 continue
 
         if key == ord('o'):
-            set_obstacles(get_obstacles_position_grid_from_frame(frame))
-            for i in get_obstacles():
-                print(i)
-            print("\n")
+            get_obstacles_position_grid_from_frame(frame)
 
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
