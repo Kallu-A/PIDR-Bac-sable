@@ -57,7 +57,7 @@ def runtime_calcul_loop(image, flags):
     image = image[get_begin_point()[1]:get_end_point()[1], get_begin_point()[0]:get_end_point()[0]]
 
     # the percentage of which the box has to be filled before being count as a obstacle
-    percent_box = 10
+    percent_box = 7
 
     dis_X = discretization_X(True)
     dis_Y = discretization_Y(True)
@@ -70,13 +70,9 @@ def runtime_calcul_loop(image, flags):
     linear = remove_small_objects(threshold_img, threshold)
 
     dilated_image = dilate_image(linear, size_robot)
-    kernel = np.ones((3, 3), np.uint8)
     cellsX, cellsY = get_cells_xy()
     obstacles = discretization_table()
 
-
-
-    cv2.imwrite("src/threshold/res.png", dilated_image)
     for x in range(cellsX):
         for y in range(cellsY):
             # test the box if it contains an obstacle
@@ -88,7 +84,6 @@ def runtime_calcul_loop(image, flags):
                     k = dilated_image[pix_y, pix_x]
                     if k != 0:
                         count += 1
-                        obstacles[y][x] = True
                     if count >= threshold:
                         obstacles[y][x] = True
                         break
