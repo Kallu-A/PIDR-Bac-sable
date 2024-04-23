@@ -2,6 +2,8 @@ import cv2
 import pickle
 import numpy as np
 
+from global_var import CAMERA_INDICE
+
 
 def flux():
 #with open('matriceCamera.pkl', 'rb') as f:
@@ -32,7 +34,7 @@ def flux():
 
     #[[0.49662178,-0.95387139,-0.0028333,-0.02729056,0.9270895]])
 
-    camera = cv2.VideoCapture(1)  # ouvrir la cam
+    camera = cv2.VideoCapture(CAMERA_INDICE)  # ouvrir la cam
 
     if not camera.isOpened() :  # gestion erreur si elle ne l'est pas
         print("Erreur : Impossible d'ouvrir la webcam")

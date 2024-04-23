@@ -93,6 +93,7 @@ def open_camera():
     width = camera.get(3)  # float `width`
     height = camera.get(4)  # float `height`
     set_end_point((int(width), int(height)))
+    print("size : " + str(width) + "," + str(height))
     set_pixels_y(get_end_point()[1] - get_begin_point()[1])
     set_pixels_x(get_end_point()[0] - get_begin_point()[0])
 

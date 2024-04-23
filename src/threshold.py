@@ -3,7 +3,8 @@ import threading
 import cv2
 
 from global_var import get_cells_xy, get_pixels_xy, set_cells_y, set_cells_x, set_pixels_x, set_pixels_y, get_end_point, \
-     set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles
+    set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles, \
+    get_begin_point
 from real_wold import discretization_Y, discretization_X, discretization_table
 
 
@@ -49,9 +50,9 @@ def get_obstacles_position_grid_from_frame(image, flags):
 
 
 def runtime_calcul_loop(image, flags):
-    # obstacles[i] = 1 if obstacle in obstacles[i]
+    # ROI of the image
+    image = image[get_begin_point()[1]:get_end_point()[1], get_begin_point()[0]:get_end_point()[0]]
     croped_image = threshold_from_frame(image)
-    pixelsX, pixelsY = get_pixels_xy()
     cellsX, cellsY = get_cells_xy()
     obstacles = discretization_table()
     dis_X = discretization_X()
