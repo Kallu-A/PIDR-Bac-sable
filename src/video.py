@@ -67,7 +67,7 @@ def fill_obstacle(frame):
     obstacles = get_obstacles()
     dis_X = discretization_X()
     dis_Y = discretization_Y()
-    color = (0, 0, 0)
+    color = (0, 0, 255)
     for i in range(len(obstacles)):
             for j in range(len(obstacles[0])):
                 if obstacles[i][j] == 1:
@@ -81,8 +81,9 @@ def fill_obstacle(frame):
                         max_Y = get_end_point()[1]
                     else:
                         max_Y = dis_Y[i + 1]
-                    cv2.line(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 1)
-                    cv2.line(frame, (int(max_X), int(y)), (int(x), int(max_Y)), color, 1)
+                    cv2.rectangle(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 2)
+                    #cv2.line(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 1)
+                    #cv2.line(frame, (int(max_X), int(y)), (int(x), int(max_Y)), color, 1)
     return frame
 
 
@@ -154,7 +155,7 @@ def open_camera():
 
         if time.time() - start_time >= 5:
             # Perform the operation every 5 seconds
-            get_obstacles_position_grid_from_frame(frame, False)
+            get_obstacles_position_grid_from_frame(framecopy, False)
             start_time = time.time()
 
         key = cv2.waitKey(1) & 0xFF
@@ -190,7 +191,7 @@ def open_camera():
                 continue
 
         if key == ord('o'):
-            get_obstacles_position_grid_from_frame(frame, True)
+            get_obstacles_position_grid_from_frame(framecopy, True)
 
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:

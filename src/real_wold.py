@@ -67,7 +67,8 @@ def convert_pixel_to_case(x, y):
     return i, j
 
 
-def discretization_X():
+def discretization_X(isROI=False):
+    begin_point = get_begin_point()
     # cellsX : number of cells wanted for X axis
     # pixelsX : number of pixels for the X axis (horizontal)
 
@@ -105,12 +106,14 @@ def discretization_X():
     if tabX[-1] == pixelsX:
         tabX.pop()
 
-    for i in range(len(tabX)):
-        tabX[i] = tabX[i] + get_begin_point()[0]
+    if not isROI:
+        for i in range(len(tabX)):
+            tabX[i] = tabX[i] + get_begin_point()[0]
     return tabX
 
 
-def discretization_Y():
+def discretization_Y(isROI=False):
+    begin_point = get_begin_point()
     # cellsY : number of cells wanted for Y axis
     # pixelsY : number of pixels for the Y axis (horizontal)
     cellsX, cellsY = get_cells_xy()
@@ -145,8 +148,9 @@ def discretization_Y():
     if tabY[-1] == pixelsY:
         tabY.pop()
 
-    for i in range(len(tabY)):
-        tabY[i] = tabY[i] + get_begin_point()[1]
+    if not isROI:
+        for i in range(len(tabY)):
+            tabY[i] = tabY[i] + get_begin_point()[1]
     return tabY
 
 

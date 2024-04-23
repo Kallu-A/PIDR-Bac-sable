@@ -29,6 +29,9 @@ newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have
 beginPoint = (0, 0)
 endPoint = (0, 0)
 
+robot_size_in_pixel = 10
+
+
 thread = None
 
 if __name__ == '__main__':
@@ -170,18 +173,32 @@ def set_end_point(value):
     global endPoint
     endPoint = value
 
+
 def get_newly_obstacles():
     global newly_obstacles
     return newly_obstacles
+
 
 def set_newly_obstacles(value):
     global newly_obstacles
     newly_obstacles = value
 
+
 def get_updated_obstacles():
     global newly_updated_obstacles
     return newly_updated_obstacles.value
 
+
 def set_updated_obstacles(value):
     global newly_updated_obstacles
     newly_updated_obstacles.value = value
+
+
+def get_robot_size_in_pixel():
+    global robot_size_in_pixel
+    return robot_size_in_pixel
+
+
+def set_robot_size_in_pixel(value):
+    global robot_size_in_pixel
+    robot_size_in_pixel = value
