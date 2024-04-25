@@ -30,6 +30,7 @@ beginPoint = (0, 0)
 endPoint = (0, 0)
 
 robot_size_in_pixel = 10
+distance_camera = 249.2 # in cm
 
 
 thread = None
@@ -202,3 +203,14 @@ def get_robot_size_in_pixel():
 def set_robot_size_in_pixel(value):
     global robot_size_in_pixel
     robot_size_in_pixel = value
+
+
+def get_distance_camera():
+    global distance_camera
+    return distance_camera
+
+
+def set_distance_camera(value):
+    global distance_camera
+    distance_camera = value
+
