@@ -14,8 +14,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from global_var import get_obstacles, set_obstacles, get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco, set_path_find, get_path_find, set_cells_y, set_pixels_y, set_pixels_x, set_cells_x, get_pixels_xy, get_cells_xy
-from threshold import get_obstacles_pixels_position, get_obstacles_position_grid, get_obstacles_coordinate_grid, \
-    threshold
+
 from real_wold import convert_pixel_to_case
 
 
@@ -390,7 +389,7 @@ def main():
     rot = float(rot)
 
     # TODO : change image path to frame
-    image_path = "threshold/barre-rouge.jpg"
+    image_path = "../res/threshold/barre-rouge.jpg"
 
     ox, oy = get_obs()
     px, py = get_pixels_xy()
@@ -473,7 +472,7 @@ def main():
 
 
 if __name__ == "__main__":
-    image_path = "threshold/barre-rouge.jpg"
+    image_path = "/res/threshold/barre-rouge.jpg"
     croped_image = threshold(image_path)
     rows, cols, _ = croped_image.shape
     set_pixels_x(cols)

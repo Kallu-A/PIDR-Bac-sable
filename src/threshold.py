@@ -5,8 +5,9 @@ import numpy as np
 
 from global_var import get_cells_xy, set_pixels_x, set_pixels_y, get_end_point, \
     set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles, \
-    get_begin_point, get_robot_size_in_pixel
+    get_begin_point
 from real_wold import discretization_Y, discretization_X, discretization_table
+from pixel_mm_finder import get_size_in_pixel_of_robot
 
 
 # Threshold the image to get the obstacles in the image
@@ -26,7 +27,7 @@ def threshold_from_frame(img):
 
 
 def dilate_image(image, size_robot):
-    kernel = np.ones((size_robot, size_robot), np.uint8)
+    kernel = np.ones((int(size_robot), int(size_robot)), np.uint8)
     return cv2.dilate(image, kernel, iterations=1)
 
 
@@ -55,7 +56,6 @@ def remove_small_objects(binary_image, min_area=100):
 def runtime_calcul_loop(image, flags):
     # ROI of the image
     image = image[get_begin_point()[1]:get_end_point()[1], get_begin_point()[0]:get_end_point()[0]]
-
     # the percentage of which the box has to be filled before being count as a obstacle
     percent_box = 7
 
@@ -65,7 +65,7 @@ def runtime_calcul_loop(image, flags):
     dis_Y.append(0)
     threshold = ((dis_Y[1] - dis_Y[0]) + (dis_X[1] - dis_X[0]) * percent_box) / 100
     threshold_img = threshold_from_frame(image)
-    size_robot = get_robot_size_in_pixel()
+    size_robot = get_size_in_pixel_of_robot()
 
     linear = remove_small_objects(threshold_img, threshold)
 
@@ -163,7 +163,7 @@ def get_obstacles_coordinate_grid_from_frame(image):
 if __name__ == "__main__":
     # image_path = "threshold/rond_rouge.jpg"
     # croped_image = threshold(image_path)
-    img = cv2.imread("src/threshold/arene.png")
+    img = cv2.imread("res/threshold/arene.png")
     rows, cols, _ = img.shape
     print(rows, cols)
 
