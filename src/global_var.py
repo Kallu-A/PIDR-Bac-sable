@@ -24,7 +24,7 @@ newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have
 beginPoint = (0, 0)
 endPoint = (0, 0)
 
-robot_size_in_cm = 10  # TODO to put the correct value
+robot_size_in_cm = 11
 ratio_pixel_cm = 1.0  # ratio calculated to convert pixel to cm
 
 
@@ -35,7 +35,7 @@ cells_y = 10  # number of cells wanted for y axis discretization
 pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
 
-size_circle_cm = 10  # size of the circle in cm
+size_circle_cm = 3.9  # size of the circle in cm
 
 
 

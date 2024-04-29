@@ -17,7 +17,7 @@ def detect_circle(frame):
     kernel = np.ones((5, 5), np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     # Detect circles
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=2, param1=150, param2=80, minRadius=4,
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=2, param1=160, param2=70, minRadius=3,
                                maxRadius=1000)
 
     if circles is not None:
