@@ -1,5 +1,6 @@
 from utility.movement_control import get_rotate_needed, rotate_robot
 from robot import Robot
+from dStarLite3d import main
 
 
 """ 
@@ -31,6 +32,19 @@ def follow_trajectory(pathx, pathy, orientations):
     return()
 
 
+
+def main():
+    
+    """
+    To make this work, we need to:
+    - get the trajectory from the algorithm
+    - call the follow up function
+    """
+    
+    pathx, pathy, orientations = main()
+    
+    follow_trajectory(pathx, pathy, orientations)
+    
     
         
         
