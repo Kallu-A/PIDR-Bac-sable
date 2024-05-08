@@ -1,6 +1,6 @@
 from utility.movement_control import get_rotate_needed, rotate_robot
 from robot import Robot
-from dStarLite3d import main
+from dStarLite3d import main as algoTrajectory
 
 
 """ 
@@ -41,10 +41,14 @@ def main():
     - call the follow up function
     """
     
-    pathx, pathy, orientations = main()
+    pathx, pathy, orientations = algoTrajectory()
     
     follow_trajectory(pathx, pathy, orientations)
     
+    
+
+if __name__ == "__main__":
+    main()
     
         
         
