@@ -92,3 +92,23 @@ class Robot:
     # call to stop the robot
     def stop_robot(self):
         self.move_robot(0, 0)
+        
+    
+    # get the initial orientation of the robot with the nearby obstacles
+    def get_initial_orientation(self):
+        # we need to activate the sensors
+        self.thymio["prox.horizontal"][0].enable = True
+        self.thymio["prox.horizontal"][1].enable = True
+        
+        prox_values = self.thymio["prox.horizontal"].get()
+        
+        if prox_values[0] > 0 or prox_values[1] > 0:
+            if prox_values[0] > prox_values[1]:
+                initial_orientation = 90
+            else:
+                initial_orientation = -90
+        
+        else:
+            initial_orientation = 0 
+            
+        return initial_orientation

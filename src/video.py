@@ -1,13 +1,14 @@
+import time
 from multiprocessing import freeze_support
 
-import time
 import cv2
 
 from aruco_function import detect_aruco, size_arena
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
-                        set_thread, set_pixels_x, set_pixels_y, get_obstacles, set_obstacles, \
-                        CAMERA_INDICE, set_end_point, get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles, get_updated_obstacles, set_updated_obstacles)
+                        set_thread, set_pixels_x, set_pixels_y, get_obstacles, CAMERA_INDICE, set_end_point,
+                        get_begin_point, get_end_point, get_newly_obstacles,
+                        set_newly_obstacles)
+from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
 from real_wold import discretization_X, discretization_Y
 from threshold import get_obstacles_position_grid_from_frame
@@ -67,7 +68,7 @@ def fill_obstacle(frame):
     obstacles = get_obstacles()
     dis_X = discretization_X()
     dis_Y = discretization_Y()
-    color = (0, 0, 0)
+    color = (0, 0, 255)
     for i in range(len(obstacles)):
             for j in range(len(obstacles[0])):
                 if obstacles[i][j] == 1:
@@ -81,8 +82,9 @@ def fill_obstacle(frame):
                         max_Y = get_end_point()[1]
                     else:
                         max_Y = dis_Y[i + 1]
-                    cv2.line(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 1)
-                    cv2.line(frame, (int(max_X), int(y)), (int(x), int(max_Y)), color, 1)
+                    cv2.rectangle(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 2)
+                    #cv2.line(frame, (int(x), int(y)), (int(max_X), int(max_Y)), color, 1)
+                    #cv2.line(frame, (int(max_X), int(y)), (int(x), int(max_Y)), color, 1)
     return frame
 
 
@@ -107,6 +109,7 @@ def open_camera():
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
     print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
     print("Pour définir la taille de l'arène appuyer sur 'a'")
+    print("Pour configurer le ratio pixel / cm placer le témoin et appuyer sur 'r'")
 
 
     cv2.namedWindow(windowName)
@@ -154,7 +157,7 @@ def open_camera():
 
         if time.time() - start_time >= 5:
             # Perform the operation every 5 seconds
-            get_obstacles_position_grid_from_frame(frame, False)
+            get_obstacles_position_grid_from_frame(framecopy.copy(), False)
             start_time = time.time()
 
         key = cv2.waitKey(1) & 0xFF
@@ -166,7 +169,7 @@ def open_camera():
             if get_thread() is not None:
                 print("Impossible de redéfinir l'arène pendant que l'algorithme tourne")
                 continue
-            size_arena(framecopy, width, height)
+            size_arena(framecopy.copy(), width, height)
 
         if key == ord('\r'):
             if get_destination is None:
@@ -179,6 +182,10 @@ def open_camera():
 
             process()
 
+        if key == ord('r'):
+            calculate_px_mm_ratio(framecopy.copy())
+
+
         if key == ord('q'):
             if get_thread() is not None:
                 print("Arrêt de l'algorithme")
@@ -190,7 +197,7 @@ def open_camera():
                 continue
 
         if key == ord('o'):
-            get_obstacles_position_grid_from_frame(frame, True)
+            get_obstacles_position_grid_from_frame(framecopy.copy(), True)
 
 
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:

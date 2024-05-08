@@ -1,12 +1,9 @@
-import pickle
-
 import cv2
 import numpy as np
-from cv2.typing import Size
 
 from global_var import path, dic, set_coordinate_aruco, get_path_find, set_begin_point, set_end_point, get_end_point, \
     get_begin_point, set_pixels_y, set_pixels_x
-from movement_control import get_point_from_angle
+from utility.movement_control import get_point_from_angle
 from real_wold import convert_case_to_pixel
 
 color_path = (102, 73, 52)
@@ -135,9 +132,6 @@ def draw_path(img):
         x, y = convert_case_to_pixel(i, j)
         cv2.line(img, (older_x, older_y), (x, y), color_path, 3)
         (older_x, older_y) = (x, y)
-
-
-
 
 
 # convertion the rotation value in classic trigonometric value

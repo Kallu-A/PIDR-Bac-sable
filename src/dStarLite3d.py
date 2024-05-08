@@ -394,7 +394,7 @@ def main():
     rot = float(rot)
 
     # TODO : change image path to frame
-    image_path = "threshold/barre-rouge.jpg"
+    image_path = "../res/threshold/barre-rouge.jpg"
 
     ox, oy = get_obs()
     px, py = get_pixels_xy()
@@ -477,7 +477,7 @@ def main():
 
 
 if __name__ == "__main__":
-    image_path = "threshold/barre-rouge.jpg"
+    image_path = "../res/threshold/barre-rouge.jpg"
     croped_image = threshold(image_path)
     rows, cols, _ = croped_image.shape
     set_pixels_x(cols)

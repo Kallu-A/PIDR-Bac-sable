@@ -17,11 +17,6 @@ destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE]
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
 path_find = []
 
-cells_x = 10  # number of cells wanted for x axis discretization
-cells_y = 10  # number of cells wanted for y axis discretization
-pixels_x = 0  # number of pixels on x axis
-pixels_y = 0  # number of pixels on y axis
-obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
 newly_obstacles = False  # if obstacles have been newly modifed
 newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have been newly modifed
 
@@ -29,7 +24,24 @@ newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have
 beginPoint = (0, 0)
 endPoint = (0, 0)
 
+robot_size_in_cm = 11
+ratio_pixel_cm = 1.0  # ratio calculated to convert pixel to cm
+
+
+## CAN BE CHANGED
+
+cells_x = 10  # number of cells wanted for x axis discretization
+cells_y = 10  # number of cells wanted for y axis discretization
+pixels_x = 0  # number of pixels on x axis
+pixels_y = 0  # number of pixels on y axis
+
+size_circle_cm = 3.9  # size of the circle in cm
+
+
+
 thread = None
+obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
+
 
 if __name__ == '__main__':
     manager = multiprocessing.Manager()
@@ -170,18 +182,47 @@ def set_end_point(value):
     global endPoint
     endPoint = value
 
+
 def get_newly_obstacles():
     global newly_obstacles
     return newly_obstacles
+
 
 def set_newly_obstacles(value):
     global newly_obstacles
     newly_obstacles = value
 
+
+def get_robot_size_in_cm():
+    global robot_size_in_cm
+    return robot_size_in_cm
+
+
 def get_updated_obstacles():
     global newly_updated_obstacles
     return newly_updated_obstacles.value
 
+
 def set_updated_obstacles(value):
     global newly_updated_obstacles
     newly_updated_obstacles.value = value
+
+
+def get_distance_camera():
+    global distance_camera
+    return distance_camera
+
+
+def set_distance_camera(value):
+    global distance_camera
+    distance_camera = value
+
+
+def get_ratio_pixel_cm():
+    global ratio_pixel_cm
+    return ratio_pixel_cm
+
+
+def set_ratio_pixel_cm(value):
+    global ratio_pixel_cm
+    ratio_pixel_cm = value
