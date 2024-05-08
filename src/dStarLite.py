@@ -365,7 +365,7 @@ def get_obs():
     oy = []
     for y in range(len(obstacles)):
         for x in range(len(obstacles[0])):
-            if obstacles[y][x] == 5:
+            if obstacles[y][x] == 1:
                 ox.append(x)
                 oy.append(y)
     return ox, oy
