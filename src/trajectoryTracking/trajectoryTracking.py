@@ -11,7 +11,7 @@ by the dStarLite3d code and follow it using Thymio functions.
 def follow_trajectory(pathx, pathy, orientations):
     
     robot = Robot()
-    currentOrientation = robot.getOrientation()
+    currentOrientation = robot.get_initial_orientation(robot)
     
     """
     The trajectory will be a list of x_positions, y_positions and orientations.
