@@ -90,7 +90,7 @@ def fill_obstacle(frame):
 
 def open_camera():
     global destination, frame_global, thread, show_dis
-    camera = cv2.VideoCapture(CAMERA_INDICE)  # ouvrir la cam
+    camera = cv2.VideoCapture(CAMERA_INDICE)  # opening the camera
 
     width = camera.get(3)  # float `width`
     height = camera.get(4)  # float `height`
@@ -100,8 +100,8 @@ def open_camera():
     set_pixels_x(get_end_point()[0] - get_begin_point()[0])
 
 
-    if not camera.isOpened():  # gestion erreur si elle ne l'est pas
-        print("Erreur : Impossible d'ouvrir la webcam")
+    if not camera.isOpened():  # error if the camera is impossible to find
+        print("Erreur : impossible d'ouvrir la webcam")
         exit()
 
     print("Veuillez sélectionner la destination et appuyer sur entrée")
@@ -116,11 +116,15 @@ def open_camera():
     cv2.setMouseCallback(windowName, click_event)
     start_time = time.time()
     while True:
-        # lecture en continu des images pour former un flux vidéo avec arrêt si lecture impossible ou touche 'q'
-        retour, frame = camera.read()  # lis chaque image, si elle n'y est pas : erreur, sinon on l'affiche
-
+        """
+        reading the frames without interruptions in order to make a video
+        stop only if reading is impossible or if we press "q"
+        """
+        retour, frame = camera.read()  # acquiring the image
+        
+        # error if it is impossible
         if not retour:
-            print("Erreur : Impossible d'ouvrir le flux vidéo")
+            print("Erreur : impossible d'ouvrir le flux vidéo")
             break
 
         framecopy = frame.copy()
@@ -203,10 +207,15 @@ def open_camera():
         if cv2.getWindowProperty(windowName, cv2.WND_PROP_VISIBLE) < 1:
             break
 
+        # showing the video with each acquisition
         cv2.imshow(windowName, frame)
 
+    # closing the connection with the camera
     camera.release()
+    
+    # closing the open reading app
     cv2.destroyAllWindows()
+    
 
     # Modify this function to do some stuff on the camera
 def exec_cam(frame):
