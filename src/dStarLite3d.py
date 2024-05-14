@@ -518,8 +518,8 @@ class DStarLite:
 
 
 def get_obs():
-    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    #obstacles = get_obstacles()
+    #obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    obstacles = get_obstacles()
     ox = []
     oy = []
     otheta = []
