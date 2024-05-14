@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 from global_var import get_obstacles, set_obstacles, get_coordinate_aruco, get_destination, set_destination, set_coordinate_aruco, set_path_find, get_path_find, set_cells_y, set_pixels_y, set_pixels_x, set_cells_x, get_pixels_xy, get_cells_xy
-from threshold import get_obstacles_pixels_position, get_obstacles_position_grid, get_obstacles_coordinate_grid, \
-    threshold
 from real_wold import convert_pixel_to_case
 from queue import PriorityQueue
+import itertools
+from threshold import threshold_from_frame, get_obstacles_position_grid_from_frame, get_obstacles_position_grid_from_frame_test
+import cv2
 
-
-show_animation = True
+show_animation = False
 pause_time = 1
 p_create_random_obstacle = 0
 
@@ -37,7 +37,7 @@ def add_coordinates(node1: Node, node2: Node):
     new_node = Node()
     new_node.x = node1.x + node2.x
     new_node.y = node1.y + node2.y
-    new_node.theta = node1.theta + node2.theta
+    new_node.theta = add_angle(node1.theta, node2.theta)
     new_node.cost = node1.cost + node2.cost
     return new_node
 
@@ -45,62 +45,118 @@ def add_coordinates(node1: Node, node2: Node):
 def compare_coordinates(node1: Node, node2: Node):
     return node1.x == node2.x and node1.y == node2.y and node1.theta == node2.theta
 
+def calculate_cost(node1: Node, node2: Node):
+
+
+    #similarity cos between node1 and node2
+    # 1 : proportional vector
+    # 0 : orthogonal vector
+    # -1 : opposed vector
+
+    # scalar = node1.x * node2.x + node1.y * node2.y + node1.theta * node2.theta #scalar between node1 and node2
+    # magnitude1 = math.sqrt(node1.x * node1.x + node1.y * node1.y + node1.theta * node1.theta) #magnitude of (0,0,1)
+    # magnitude2 = math.sqrt(node2.x * node2.x + node2.y * node2.y + node2.theta * node2.theta) #magnitude of (xb, yb, thetab)
+    scalar = 1 * 1 + 1 * 1 + node1.theta * node2.theta #scalar between node1 and node2
+    magnitude1 = math.sqrt(1 * 1 + 1 * 1 + node1.theta * node1.theta) #magnitude of (0,0,1)
+    magnitude2 = math.sqrt(1 * 1 + 1 * 1 + node2.theta * node2.theta) #magnitude of (xb, yb, thetab)
+    cos_similarity = scalar/(magnitude1*magnitude2)
+    return (cos_similarity - 1) * -1 #between 0 and 2 : 2 (opposed), 1 (orthogonal), 0 (proportional)
+
+    # return round(abs(node1.theta - node2.theta) + math.sqrt((node2.x-node1.x)**2 + (node2.y-node1.y)**2) * 0.1, 5)
+
+
+def calculate_angle(theta_start, theta_goal):
+    #angle deplacements between theta_start and theta_goal
+    if theta_start == theta_goal:
+        return 0
+    if theta_start > theta_goal:
+        if theta_goal > 0:
+            return theta_goal - theta_start
+        if theta_goal == 0:
+            return theta_start
+        if theta_goal < 0:
+            if theta_goal - theta_start > 4:
+                return 8 - (theta_goal - theta_start)
+            if theta_goal - theta_start < -4:
+                return 8 - abs(theta_goal - theta_start)
+            if abs(theta_goal - theta_start) == 4:
+                return 4
+            if abs(theta_goal - theta_start) < 4:
+                return theta_goal - theta_start
+    if theta_start < theta_goal:
+        if theta_start >= 0:
+            return theta_goal - theta_start
+        if theta_start < 0:
+            if abs(theta_goal - theta_start) > 4:
+                return (theta_goal - theta_start) - 8
+            if abs(theta_goal - theta_start) == 4:
+                return 4
+            if abs(theta_goal - theta_start) < 4:
+                return theta_goal - theta_start
+
+def add_angle(theta1, theta2):
+    theta_add = theta1 + theta2
+    if -3 <= theta_add < 5:
+        return theta_add
+    if theta_add < -3:
+        if theta_add == -4:
+            return -theta_add
+        return theta_add + 8
+    if theta_add >= 5:
+        return theta_add - 8
+
+
 
 class DStarLite:
     # Please adjust the heuristic function (h) if you change the list of
     # possible motions
-    motions = [
-        Node(1, 0, 0, 1),
-        Node(0, 1, 0, 1),
-        Node(-1, 0, 0, 1),
-        Node(0, -1, 0, 1),
-        Node(1, 1, 0, math.sqrt(2)),
-        Node(1, -1, 0, math.sqrt(2)),
-        Node(-1, 1, 0, math.sqrt(2)),
-        Node(-1, -1, 0, math.sqrt(2))
 
-    ]
 
     def __init__(self, ox: list, oy: list):
         # Ensure that within the algorithm implementation all node coordinates
         # are indices in the grid and extend
-        # from 0 to abs(<axis>_max - <axis>_min)
-        self.x_min_world = 0
-        self.y_min_world = 0
         self.x_max, self.y_max = get_cells_xy()
-        self.obstacles = [Node(x - self.x_min_world, y - self.y_min_world)
+        self.obstacles = []
+
+        # for x, y in zip(ox, oy):
+        #     self.obstacles.append(Node(x=x, y=y, theta=i) for i in [-3, -2, -1, 0, 1, 2, 3, 4])
+        self.obstacles = [[Node(x, y, i) for i in [-3, -2, -1, 0, 1, 2, 3, 4]]
                           for x, y in zip(ox, oy)]
-        self.obstacles_xy = np.array(
-            [[obstacle.x, obstacle.y] for obstacle in self.obstacles]
+        self.obstacles = list(itertools.chain(*self.obstacles))
+
+        self.obstacles_xyt = np.array(
+            [[obstacle.x, obstacle.y, obstacle.theta] for obstacle in self.obstacles]
         )
-        self.start = Node(0, 0)
-        self.goal = Node(0, 0)
+        #print(self.obstacles_xyt)
+        self.start = Node(0, 0, 0)
+        self.goal = Node(0, 0, 0)
         self.U = list()  # type: ignore
         self.km = 0.0
         self.kold = 0.0
         self.rhs = self.create_grid(float("inf"))
         self.g = self.create_grid(float("inf"))
-        self.detected_obstacles_xy = np.empty((0, 2))
-        self.xy = np.empty((0, 2))
+        self.detected_obstacles_xyt = np.empty((0, 3))
+        self.xy = np.empty((0, 3))
         if show_animation:
             self.detected_obstacles_for_plotting_x = list()  # type: ignore
             self.detected_obstacles_for_plotting_y = list()  # type: ignore
         self.initialized = False
 
     def create_grid(self, val: float):
-        return np.full((self.x_max, self.y_max), val)
+        return np.full((self.x_max, self.y_max, 8), val)
 
     def is_obstacle(self, node: Node):
         x = np.array([node.x])
         y = np.array([node.y])
-        obstacle_x_equal = self.obstacles_xy[:, 0] == x
-        obstacle_y_equal = self.obstacles_xy[:, 1] == y
+        theta = np.array([node.theta])
+        obstacle_x_equal = self.obstacles_xyt[:, 0] == x
+        obstacle_y_equal = self.obstacles_xyt[:, 1] == y
         is_in_obstacles = (obstacle_x_equal & obstacle_y_equal).any()
 
         is_in_detected_obstacles = False
-        if self.detected_obstacles_xy.shape[0] > 0:
-            is_x_equal = self.detected_obstacles_xy[:, 0] == x
-            is_y_equal = self.detected_obstacles_xy[:, 1] == y
+        if self.detected_obstacles_xyt.shape[0] > 0:
+            is_x_equal = self.detected_obstacles_xyt[:, 0] == x
+            is_y_equal = self.detected_obstacles_xyt[:, 1] == y
             is_in_detected_obstacles = (is_x_equal & is_y_equal).any()
 
         return is_in_obstacles or is_in_detected_obstacles
@@ -109,11 +165,13 @@ class DStarLite:
         if self.is_obstacle(node2):
             # Attempting to move from or to an obstacle
             return math.inf
-        new_node = Node(node1.x-node2.x, node1.y-node2.y)
-        detected_motion = list(filter(lambda motion:
-                                      compare_coordinates(motion, new_node),
-                                      self.motions))
-        return detected_motion[0].cost
+
+        # new_node = Node(node1.x-node2.x, node1.y-node2.y, calculate_angle(node1.theta, node2.theta),
+        #                 calculate_cost(node1, node2))
+        # detected_motion = list(filter(lambda motion:
+        #                               compare_coordinates(motion, new_node),
+        #                               self.motions))
+        return calculate_cost(node1, node2)
 
     def h(self, s: Node):
         # Cannot use the 2nd euclidean norm as this might sometimes generate
@@ -126,21 +184,114 @@ class DStarLite:
 
         # Below is the same as 1; modify if you modify the cost of each move in
         # motion
-        # return max(abs(self.start.x - s.x), abs(self.start.y - s.y))
-        return 1
+        return 0
 
     def calculate_key(self, s: Node):
-        return (min(self.g[s.x][s.y], self.rhs[s.x][s.y]) + self.h(s)
-                + self.km, min(self.g[s.x][s.y], self.rhs[s.x][s.y]))
+        return (min(self.g[s.x][s.y][s.theta], self.rhs[s.x][s.y][s.theta]) + self.h(s)
+                + self.km, min(self.g[s.x][s.y][s.theta], self.rhs[s.x][s.y][s.theta]))
 
     def is_valid(self, node: Node):
-        if 0 <= node.x < self.x_max and 0 <= node.y < self.y_max:
+        if 0 <= node.x < self.x_max and 0 <= node.y < self.y_max and -3 <= node.theta < 5:
             return True
         return False
 
+
     def get_neighbours(self, u: Node):
-        return [add_coordinates(u, motion) for motion in self.motions
-                if self.is_valid(add_coordinates(u, motion))]
+        possible_motions = [
+        #we are in a 3 dimensions world with x = [-1, 0, 1] y = [-1, 0, 1] theta = [-3, -2, -1, 0, 1, 2, 3, 4]
+        #Node(0, 0, 0, calculate_cost(0, 0, 0)),
+        # Node(0, 0, 1, calculate_cost(0, 0, 1)),
+        # Node(0, 0, 2, calculate_cost(0, 0, 2)),
+        # Node(0, 0, 3, calculate_cost(0, 0, 3)),
+        # Node(0, 0, 4, calculate_cost(0, 0, 4)),
+        # Node(0, 0, -1, calculate_cost(0, 0, 1)),
+        # Node(0, 0, -2, calculate_cost(0, 0, 2)),
+        # Node(0, 0, -3, calculate_cost(0, 0, 3)),
+
+            Node(1, 0, 0, 0),
+            Node(1, 0, 1, 0),
+            Node(1, 0, 2, 0),
+            Node(1, 0, 3, 0),
+            Node(1, 0, 4, 0),
+            Node(1, 0, -1, 0),
+            Node(1, 0, -2, 0),
+            Node(1, 0, -3, 0),
+
+            Node(0, 1, 0, 0),
+            Node(0, 1, 1, 0),
+            Node(0, 1, 2, 0),
+            Node(0, 1, 3, 0),
+            Node(0, 1, 4, 0),
+            Node(0, 1, -1, 0),
+            Node(0, 1, -2, 0),
+            Node(0, 1, -3, 0),
+
+            Node(-1, 0, 0, 0),
+            Node(-1, 0, 1, 0),
+            Node(-1, 0, 2, 0),
+            Node(-1, 0, 3, 0),
+            Node(-1, 0, 4, 0),
+            Node(-1, 0, -1, 0),
+            Node(-1, 0, -2, 0),
+            Node(-1, 0, -3, 0),
+
+            Node(0, -1, 0, 0),
+            Node(0, -1, 1, 0),
+            Node(0, -1, 2, 0),
+            Node(0, -1, 3, 0),
+            Node(0, -1, 4, 0),
+            Node(0, -1, -1, 0),
+            Node(0, -1, -2, 0),
+            Node(0, -1, -3, 0),
+
+            Node(1, 1, 0, 0),
+            Node(1, 1, 1, 0),
+            Node(1, 1, 2, 0),
+            Node(1, 1, 3, 0),
+            Node(1, 1, 4, 0),
+            Node(1, 1, -1, 0),
+            Node(1, 1, -2, 0),
+            Node(1, 1, -3, 0),
+
+            Node(1, -1, 0, 0),
+            Node(1, -1, 1, 0),
+            Node(1, -1, 2, 0),
+            Node(1, -1, 3, 0),
+            Node(1, -1, 4, 0),
+            Node(1, -1, -1, 0),
+            Node(1, -1, -2, 0),
+            Node(1, -1, -3, 0),
+
+            Node(-1, 1, 0, 0),
+            Node(-1, 1, 1, 0),
+            Node(-1, 1, 2, 0),
+            Node(-1, 1, 3, 0),
+            Node(-1, 1, 4, 0),
+            Node(-1, 1, -1, 0),
+            Node(-1, 1, -2, 0),
+            Node(-1, 1, -3, 0),
+
+            Node(-1, -1, 0, 0),
+            Node(-1, -1, 1, 0),
+            Node(-1, -1, 2, 0),
+            Node(-1, -1, 3, 0),
+            Node(-1, -1, 4, 0),
+            Node(-1, -1, -1, 0),
+            Node(-1, -1, -2, 0),
+            Node(-1, -1, -3, 0),
+
+        ]
+
+        neighbours = []
+        for node in possible_motions:
+            neigh = Node(u.x + node.x, u.y + node.y, add_angle(u.theta, node.theta), calculate_cost(u, add_coordinates(u, node)))
+            if self.is_valid(neigh) and (neigh not in neighbours):
+                neighbours.append(neigh)
+
+        return neighbours
+
+        # return [add_coordinates(u, motion) for motion in self.motions
+        #         if self.is_valid(add_coordinates(u, motion))]
 
     def pred(self, u: Node):
         # Grid, so each vertex is connected to the ones around it
@@ -153,29 +304,32 @@ class DStarLite:
     def initialize(self, start: Node, goal: Node):
         self.start.x = start.x
         self.start.y = start.y
+        self.start.theta = start.theta
         self.goal.x = goal.x
         self.goal.y = goal.y
+        self.goal.theta = goal.theta
         if not self.initialized:
             self.initialized = True
             print('Initializing')
-            self.U = PriorityQueue()  # Would normally be a priority queue
+            self.U = list()  # Would normally be a priority queue : PriorityQueue()
             self.km = 0.0
             self.rhs = self.create_grid(math.inf)
             self.g = self.create_grid(math.inf)
-            self.rhs[self.goal.x][self.goal.y] = 0
-            self.U.put((self.goal, self.calculate_key(self.goal)))
-            self.detected_obstacles_xy = np.empty((0, 2))
+            self.rhs[self.goal.x][self.goal.y][self.goal.theta] = 0
+            self.U.append((self.goal, self.calculate_key(self.goal))) # U = [(node, key), ...]
+            self.detected_obstacles_xyt = np.empty((0, 3))
+            print('Initializing finished')
 
     def update_vertex(self, u: Node):
         if not compare_coordinates(u, self.goal):
-            self.rhs[u.x][u.y] = min([self.c(u, sprime) +
-                                      self.g[sprime.x][sprime.y]
+            self.rhs[u.x][u.y][u.theta] = min([self.c(u, sprime) +
+                                      self.g[sprime.x][sprime.y][sprime.theta]
                                       for sprime in self.succ(u)])
         if any([compare_coordinates(u, node) for node, key in self.U]):
             self.U = [(node, key) for node, key in self.U
                       if not compare_coordinates(node, u)]
             self.U.sort(key=lambda x: x[1])
-        if self.g[u.x][u.y] != self.rhs[u.x][u.y]:
+        if self.g[u.x][u.y][u.theta] != self.rhs[u.x][u.y][u.theta]:
             self.U.append((u, self.calculate_key(u)))
             self.U.sort(key=lambda x: x[1])
 
@@ -190,8 +344,10 @@ class DStarLite:
         start_key_not_updated = self.compare_keys(
             self.U[0][1], self.calculate_key(self.start)
         )
-        rhs_not_equal_to_g = self.rhs[self.start.x][self.start.y] != \
-            self.g[self.start.x][self.start.y]
+        #local inconsistency
+        rhs_not_equal_to_g = self.rhs[self.start.x][self.start.y][self.start.theta] != \
+            self.g[self.start.x][self.start.y][self.start.theta]
+
         while has_elements and start_key_not_updated or rhs_not_equal_to_g:
             self.kold = self.U[0][1]
             u = self.U[0][0]
@@ -199,20 +355,30 @@ class DStarLite:
             if self.compare_keys(self.kold, self.calculate_key(u)):
                 self.U.append((u, self.calculate_key(u)))
                 self.U.sort(key=lambda x: x[1])
-            elif (self.g[u.x, u.y] > self.rhs[u.x, u.y]).any():
-                self.g[u.x, u.y] = self.rhs[u.x, u.y]
+            elif self.g[u.x][u.y][u.theta] > self.rhs[u.x][u.y][u.theta]:
+                self.g[u.x][u.y][u.theta] = self.rhs[u.x][u.y][u.theta]
                 for s in self.pred(u):
                     self.update_vertex(s)
             else:
-                self.g[u.x, u.y] = math.inf
+                self.g[u.x][u.y][u.theta] = math.inf
                 for s in self.pred(u) + [u]:
                     self.update_vertex(s)
+
             self.U.sort(key=lambda x: x[1])
             start_key_not_updated = self.compare_keys(
                 self.U[0][1], self.calculate_key(self.start)
             )
-            rhs_not_equal_to_g = self.rhs[self.start.x][self.start.y] != \
-                self.g[self.start.x][self.start.y]
+            rhs_not_equal_to_g = self.rhs[self.start.x][self.start.y][self.start.theta] != \
+                self.g[self.start.x][self.start.y][self.start.theta]
+
+
+
+        # print("while out")
+        # print("has_elements : ", has_elements)
+        # print("rhs_not_equal_to_g : ", rhs_not_equal_to_g)
+        # print("start_key_not_updated : ", start_key_not_updated)
+
+
 
     def detect_changes(self):
         changed_vertices = list()
@@ -222,57 +388,33 @@ class DStarLite:
                    compare_coordinates(spoofed_obstacle, self.goal):
                     continue
                 changed_vertices.append(spoofed_obstacle)
-                self.detected_obstacles_xy = np.concatenate(
+                self.detected_obstacles_xyt = np.concatenate(
                     (
-                        self.detected_obstacles_xy,
-                        [[spoofed_obstacle.x, spoofed_obstacle.y]]
+                        self.detected_obstacles_xyt,
+                        [[spoofed_obstacle.x, spoofed_obstacle.y, spoofed_obstacle.theta]]
                     )
                 )
                 if show_animation:
                     self.detected_obstacles_for_plotting_x.append(
-                        spoofed_obstacle.x + self.x_min_world)
+                        spoofed_obstacle.x)
                     self.detected_obstacles_for_plotting_y.append(
-                        spoofed_obstacle.y + self.y_min_world)
+                        spoofed_obstacle.y)
                     plt.plot(self.detected_obstacles_for_plotting_x,
                              self.detected_obstacles_for_plotting_y, ".k")
                     plt.pause(pause_time)
             self.spoofed_obstacles.pop(0)
 
-        # Allows random generation of obstacles
-        random.seed()
-        if random.random() > 1 - p_create_random_obstacle:
-            x = random.randint(0, self.x_max - 1)
-            y = random.randint(0, self.y_max - 1)
-            new_obs = Node(x, y)
-            if compare_coordinates(new_obs, self.start) or \
-               compare_coordinates(new_obs, self.goal):
-                return changed_vertices
-            changed_vertices.append(Node(x, y))
-            self.detected_obstacles_xy = np.concatenate(
-                (
-                    self.detected_obstacles_xy,
-                    [[x, y]]
-                )
-            )
-            if show_animation:
-                self.detected_obstacles_for_plotting_x.append(x +
-                                                              self.x_min_world)
-                self.detected_obstacles_for_plotting_y.append(y +
-                                                              self.y_min_world)
-                plt.plot(self.detected_obstacles_for_plotting_x,
-                         self.detected_obstacles_for_plotting_y, ".k")
-                plt.pause(pause_time)
         return changed_vertices
 
     def compute_current_path(self):
         path = list()
-        current_point = Node(self.start.x, self.start.y)
+        current_point = Node(self.start.x, self.start.y, self.start.theta)
         while not compare_coordinates(current_point, self.goal):
             path.append(current_point)
             current_point = min(self.succ(current_point),
                                 key=lambda sprime:
                                 self.c(current_point, sprime) +
-                                self.g[sprime.x][sprime.y])
+                                self.g[sprime.x][sprime.y][sprime.theta])
         path.append(self.goal)
         return path
 
@@ -285,8 +427,8 @@ class DStarLite:
         return True
 
     def display_path(self, path: list, colour: str, alpha: float = 1.0):
-        px = [(node.x + self.x_min_world) for node in path]
-        py = [(node.y + self.y_min_world) for node in path]
+        px = [(node.x) for node in path]
+        py = [(node.y) for node in path]
         drawing = plt.plot(px, py, colour, alpha=alpha)
         plt.pause(pause_time)
         return drawing
@@ -300,29 +442,39 @@ class DStarLite:
                                   ]
         pathx = []
         pathy = []
+        paththeta = []
         self.initialize(start, goal)
         last = self.start
         self.compute_shortest_path()
-        pathx.append(self.start.x + self.x_min_world)
-        pathy.append(self.start.y + self.y_min_world)
+        pathx.append(self.start.x)
+        pathy.append(self.start.y)
+        paththeta.append(self.start.theta)
+        path = []
+        for i in range(len(pathx)):
+            path.append((pathx[i], pathy[i], paththeta[i]))
+        set_path_find(path)
 
-        if show_animation:
-            current_path = self.compute_current_path()
-            previous_path = current_path.copy()
-            previous_path_image = self.display_path(previous_path, ".c",
-                                                    alpha=0.3)
-            current_path_image = self.display_path(current_path, ".c")
+
+        # if show_animation:
+        #     current_path = self.compute_current_path()
+        #     previous_path = current_path.copy()
+        #     previous_path_image = self.display_path(previous_path, ".c",
+        #                                             alpha=0.3)
+        #     current_path_image = self.display_path(current_path, ".c")
 
         while not compare_coordinates(self.goal, self.start):
-            if self.g[self.start.x][self.start.y] == math.inf:
+            if self.g[self.start.x][self.start.y][self.start.theta] == math.inf:
                 print("No path possible")
                 return False, pathx, pathy
+
             self.start = min(self.succ(self.start),
                              key=lambda sprime:
                              self.c(self.start, sprime) +
-                             self.g[sprime.x][sprime.y])
-            pathx.append(self.start.x + self.x_min_world)
-            pathy.append(self.start.y + self.y_min_world)
+                             self.g[sprime.x][sprime.y][sprime.theta])
+
+            pathx.append(self.start.x)
+            pathy.append(self.start.y)
+            paththeta.append(self.start.theta)
             if show_animation:
                 current_path.pop(0)
                 plt.plot(pathx, pathy, "-r")
@@ -335,8 +487,8 @@ class DStarLite:
                 for u in changed_vertices:
                     if compare_coordinates(u, self.start):
                         continue
-                    self.rhs[u.x][u.y] = math.inf
-                    self.g[u.x][u.y] = math.inf
+                    self.rhs[u.x][u.y][u.theta] = math.inf
+                    self.g[u.x][u.y][u.theta] = math.inf
                     self.update_vertex(u)
                 self.compute_shortest_path()
 
@@ -357,37 +509,74 @@ class DStarLite:
 
         path = []
         for i in range(len(pathx)):
-            path.append((pathx[i], pathy[i]))
+            path.append([pathx[i], pathy[i], paththeta[i]])
         set_path_find(path)
-        print("path_find : ", get_path_find())
+        add_angle_to_path(path)
+        print("path : ", get_path_find())
+        set_path_find(path)
         return True, pathx, pathy
 
 
 def get_obs():
-    obstacles = get_obstacles()
+    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    #obstacles = get_obstacles()
     ox = []
     oy = []
+    otheta = []
     for y in range(len(obstacles)):
         for x in range(len(obstacles[0])):
-            if obstacles[y][x] == 5:
+            if obstacles[y][x] == True:
                 ox.append(x)
                 oy.append(y)
+
     return ox, oy
+
+
+def rot_conversion(rot):
+    if 0 <= rot < 45:
+        return 0
+    if 45 <= rot < 90:
+        return 1
+    if 90 <= rot < 135:
+        return 2
+    if 135 <= rot < 180:
+        return 3
+    if rot == abs(180) or -180 < rot < -135:
+        return 4
+    if -135 <= rot < -90:
+        return -3
+    if -90 <= rot < -45:
+        return -2
+    if -45 <= rot < 0:
+        return -1
+
+def add_angle_to_path(path):
+    for i in range(len(path) - 1):
+        motion_x = path[i+1][0] - path[i][0]
+        motion_y = path[i+1][1] - path[i][1]
+        if motion_x == -1 and motion_y == -1:
+            path[i][2] = 135
+        elif motion_x == -1 and motion_y == 0:
+            path[i][2] = 180
+        elif motion_x == -1 and motion_y == 1:
+            path[i][2] = -135
+        elif motion_x == 0 and motion_y == -1:
+            path[i][2] = 90
+        elif motion_x == 0 and motion_y == 1:
+            path[i][2] = -90
+        elif motion_x == 1 and motion_y == -1:
+            path[i][2] = 45
+        elif motion_x == 1 and motion_y == 0:
+            path[i][2] = 0
+        elif motion_x == 1 and motion_y == 1:
+            path[i][2] = -45
+    path[-1][2] = path[-2][2]
+
 
 def main():
 
-    # start and goal position
-    # sx = 10  # [m]
-    # sy = 10  # [m]
-    # gx = 50  # [m]
-    # gy = 50  # [m]
     sx, sy, rot = get_coordinate_aruco()
     gx, gy = get_destination()
-
-    # sx = int(sx)
-    # sy = int(sy)
-    # gx = int(gx)
-    # gy = int(gy)
 
     sx, sy = convert_pixel_to_case(int(sx), int(sy))
     gx, gy = convert_pixel_to_case(int(gx), int(gy))
@@ -397,94 +586,34 @@ def main():
     image_path = "../res/threshold/barre-rouge.jpg"
 
     ox, oy = get_obs()
-    px, py = get_pixels_xy()
-    cx, cy = get_cells_xy()
-
-
-    # set obstacle positions
-    # ox = []
-    # oy = []
-    #
-    # for i in range(-10, 60):
-    #     ox.append(i)
-    #     oy.append(-10.0)
-    # for i in range(-10, 60):
-    #     ox.append(60.0)
-    #     oy.append(i)
-    # for i in range(-10, 61):
-    #     ox.append(i)
-    #     oy.append(60.0)
-    # for i in range(-10, 61):
-    #     ox.append(-10.0)
-    #     oy.append(i)
-    # for i in range(-10, 40):
-    #     ox.append(20.0)
-    #     oy.append(i)
-    # for i in range(0, 40):
-    #     ox.append(40.0)
-    #     oy.append(60.0 - i)
-
-    if show_animation:
-        plt.plot(ox, oy, ".k")
-        plt.plot(sx, sy, "og")
-        plt.plot(gx, gy, "xb")
-
-        plt.grid()
-
-        plt.axis([-1, cx+1, -1, cy+1])
-        plt.ylim(cy + 1, -1)
-
-        label_column = ['Start', 'Goal', 'Path taken',
-                        'Current computed path', 'Previous computed path',
-                        'Obstacles']
-        columns = [plt.plot([], [], symbol, color=colour, alpha=alpha)[0]
-                   for symbol, colour, alpha in [['o', 'g', 1],
-                                                 ['x', 'b', 1],
-                                                 ['-', 'r', 1],
-                                                 ['.', 'c', 1],
-                                                 ['.', 'c', 0.3],
-                                                 ['.', 'k', 1]]]
-        plt.legend(columns, label_column, bbox_to_anchor=(1, 1), title="Key:",
-                   fontsize="xx-small")
-        plt.plot()
-        plt.pause(pause_time)
-
-    # Obstacles discovered at time = row
-    # time = 1, obstacles discovered at (0, 2), (9, 2), (4, 0)
-    # time = 2, obstacles discovered at (0, 1), (7, 7)
-    # ...
-    # when the spoofed obstacles are:
-    # spoofed_ox = [[0, 9, 4], [0, 7], [], [], [], [], [], [5]]
-    # spoofed_oy = [[2, 2, 0], [1, 7], [], [], [], [], [], [4]]
-
-    # Reroute
-    # spoofed_ox = [[], [], [], [], [], [], [], [40 for _ in range(10, 21)]]
-    # spoofed_oy = [[], [], [], [], [], [], [], [i for i in range(10, 21)]]
-
-    # Obstacles that demostrate large rerouting
-    # spoofed_ox = [[], [], [],
-    #               [i for i in range(0, 21)] + [0 for _ in range(0, 20)]]
-    # spoofed_oy = [[], [], [],
-    #               [20 for _ in range(0, 21)] + [i for i in range(0, 20)]]
-
 
     spoofed_ox = []
     spoofed_oy = []
-
     dstarlite = DStarLite(ox, oy)
-    dstarlite.main(Node(x=sx, y=sy), Node(x=gx, y=gy),
+    dstarlite.main(Node(x=sx, y=sy, theta=0), Node(x=gx, y=gy, theta=0),
                     spoofed_ox=spoofed_ox, spoofed_oy=spoofed_oy)
 
 
 if __name__ == "__main__":
-    image_path = "../res/threshold/barre-rouge.jpg"
-    croped_image = threshold(image_path)
-    rows, cols, _ = croped_image.shape
+    image_path = "res/threshold/barre-rouge.jpg"
+    imageP = cv2.imread(image_path)
+    croped_image = threshold_from_frame(imageP)
+    # cv2.imshow("Threshold", croped_image)
+    # cv2.waitKey()
+    rows, cols = croped_image.shape
     set_pixels_x(cols)
     set_pixels_y(rows)
-    set_cells_y(30)
-    set_cells_x(30)
+    set_cells_y(5)
+    set_cells_x(5)
     set_destination((2, 1))
-    set_coordinate_aruco((599, 599, 0))
-    set_obstacles(get_obstacles_position_grid("threshold/barre-rouge.jpg"))
+    set_coordinate_aruco((599, 599, 180))
+    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    # print(obstacles)
     main()
+
+
+
+
+
+
+

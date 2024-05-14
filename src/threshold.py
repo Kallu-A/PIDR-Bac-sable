@@ -5,7 +5,7 @@ import numpy as np
 
 from global_var import get_cells_xy, set_pixels_x, set_pixels_y, get_end_point, \
     set_end_point, set_begin_point, set_obstacles, set_newly_obstacles, get_obstacles, set_updated_obstacles, \
-    get_begin_point
+    get_begin_point, get_pixels_xy
 from real_wold import discretization_Y, discretization_X, discretization_table
 from pixel_mm_finder import get_size_in_pixel_of_robot
 
@@ -22,7 +22,6 @@ def threshold_from_frame(img):
     # Merge the mask and crop the red regions
     mask = cv2.bitwise_or(mask1, mask2)
     _, thresholded = cv2.threshold(mask, 128, 255, cv2.THRESH_BINARY)
-
     return thresholded
 
 
@@ -149,9 +148,45 @@ def get_obstacles_pixels_position_from_frame(image):
                 obstacles.append((i, j))
     return obstacles
 
+def get_obstacles_position_grid_from_frame_test(img):
+    # ROI of the image
+    image = img[get_begin_point()[1]:get_end_point()[1], get_begin_point()[0]:get_end_point()[0]]
+    # the percentage of which the box has to be filled before being count as a obstacle
+    percent_box = 7
+
+    dis_X = discretization_X(True)
+    dis_Y = discretization_Y(True)
+    dis_X.append(0)
+    dis_Y.append(0)
+    threshold = ((dis_Y[1] - dis_Y[0]) + (dis_X[1] - dis_X[0]) * percent_box) / 100
+    threshold_img = threshold_from_frame(img)
+    size_robot = get_size_in_pixel_of_robot()
+
+    linear = remove_small_objects(threshold_img, threshold)
+
+    dilated_image = dilate_image(linear, size_robot)
+    cellsX, cellsY = get_cells_xy()
+    obstacles = discretization_table()
+
+    for x in range(cellsX):
+        for y in range(cellsY):
+            # test the box if it contains an obstacle
+            count = 0
+            for pix_x in range(dis_X[x], dis_X[x + 1]):
+                if obstacles[y][x] == True:
+                    break
+                for pix_y in range(dis_Y[y], dis_Y[y + 1]):
+                    k = dilated_image[pix_y, pix_x]
+                    if k != 0:
+                        count += 1
+                    if count >= threshold:
+                        obstacles[y][x] = True
+                        break
+    return obstacles
+
 
 def get_obstacles_coordinate_grid_from_frame(image):
-    grid = get_obstacles_position_grid_from_frame(image)
+    grid = get_obstacles()
     obstacles_coordinate_grid = []
     for i in range(len(grid)): # number of rows
         for j in range(len(grid[0])): # number of cols
