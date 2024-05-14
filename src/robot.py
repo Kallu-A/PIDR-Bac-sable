@@ -102,6 +102,7 @@ class Robot:
         
         prox_values = self.thymio["prox.horizontal"].get()
         
+        # allows us to see with sensor is closer to the obstacles
         if prox_values[0] > 0 or prox_values[1] > 0:
             if prox_values[0] > prox_values[1]:
                 initial_orientation = 90
@@ -110,5 +111,8 @@ class Robot:
         
         else:
             initial_orientation = 0 
+            # in this case, the orientation is unknown
             
         return initial_orientation
+        # must be defined with the orientation of the obstacle
+        # could be easier to put a fixed value and stuck to it 

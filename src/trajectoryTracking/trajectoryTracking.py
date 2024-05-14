@@ -1,6 +1,7 @@
 from utility.movement_control import get_rotate_needed, rotate_robot
 from robot import Robot
 from dStarLite3d import main as algoTrajectory
+import time
 
 
 """ 
@@ -21,7 +22,7 @@ def follow_trajectory(pathx, pathy, orientations):
         rotate_robot(currentOrientation, orientation)
         currentOrientation = orientation
         
-        robot.move_robot(robot,x,y)
+        robot.move_robot(robot,x,y)  # to be replaced with goStraightForward when operational
     
     """
     Once we have the coordinates one by one, we have to follow them.
@@ -31,6 +32,33 @@ def follow_trajectory(pathx, pathy, orientations):
     
     return()
 
+
+
+def goStraightForward(speedLeft, speedRight):
+    # Connection to our robot through Thymio Serial Port in the "Robot" folder
+    robot = Robot()
+    
+    """ 
+    We have to give different speeds to right and left motors in case they do not work the same way.
+    The test will be made with a straight line.
+    Different speeds could also make the robot rotate with a curve instead of straight lines and a 
+    fixed rotation.
+    """
+    robot.set_var("motor.left.target", speedLeft)
+    robot.set_var("motor.right.target", speedRight)
+    
+    """
+    We can define :
+    - x,y positions to go to with a straight line
+    - a time for the duration of the program
+    """
+    
+    time.sleep(3) # the robot will got straight forward for 3 secondes
+    
+    
+    
+    
+    
 
 
 def main():
