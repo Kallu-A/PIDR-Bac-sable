@@ -17,7 +17,7 @@ def detect_circle(frame):
     kernel = np.ones((5, 5), np.uint8)
     thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
     # Detect circles
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=2, param1=160, param2=70, minRadius=3,
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, dp=1, minDist=1, param1=190, param2=30, minRadius=3,
                                maxRadius=1000)
 
     if circles is not None:
@@ -44,6 +44,7 @@ def calculate_px_mm_ratio(frame):
     cv2.imshow("Detection du temoin", frame)
     set_ratio_pixel_cm(size_circle_cm / (radius * 2))
     print("Ratio pixel/cm configuré " + str(get_ratio_pixel_cm()))
+    print("Taille du robot en pixel " + str(get_size_in_pixel_of_robot()))
 
 
 # return the size of the robot in pixel

@@ -76,12 +76,10 @@ def detect_aruco(img):
             new_x, new_y = get_point_from_angle(c_x, c_y, yaw, marker_size * 0.7)
             cv2.arrowedLine(image_copy, (int(c_x), int(c_y)), (int(new_x), int(new_y)), color, max(int(marker_size / 40), 3))
 
+
             set_coordinate_aruco((c_x, c_y, yaw))
 
-           
 
-    if len(get_path_find()) > 0:
-        draw_path(image_copy)
     return image_copy
 
 def size_arena(frame, width, height):
@@ -133,6 +131,7 @@ def draw_path(img):
         x, y = convert_case_to_pixel(i, j)
         cv2.line(img, (older_x, older_y), (x, y), color_path, 3)
         (older_x, older_y) = (x, y)
+    return img
 
 
 # convertion the rotation value in classic trigonometric value

@@ -573,10 +573,12 @@ def add_angle_to_path(path):
     path[-1][2] = path[-2][2]
 
 
-def main():
+def dstar_algo():
 
     sx, sy, rot = get_coordinate_aruco()
+    print(sx, sy)
     gx, gy = get_destination()
+    print("g : ", gx, gy)
 
     sx, sy = convert_pixel_to_case(int(sx), int(sy))
     gx, gy = convert_pixel_to_case(int(gx), int(gy))

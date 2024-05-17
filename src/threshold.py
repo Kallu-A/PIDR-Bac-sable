@@ -164,7 +164,7 @@ def get_obstacles_position_grid_from_frame_test(img):
 
     linear = remove_small_objects(threshold_img, threshold)
 
-    dilated_image = dilate_image(linear, size_robot)
+    dilated_image = dilate_image(linear, size_robot/2)
     cellsX, cellsY = get_cells_xy()
     obstacles = discretization_table()
 

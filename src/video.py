@@ -3,11 +3,11 @@ from multiprocessing import freeze_support
 
 import cv2
 
-from aruco_function import detect_aruco, size_arena
+from aruco_function import detect_aruco, size_arena, draw_path
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, CAMERA_INDICE, set_end_point,
                         get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles)
+                        set_newly_obstacles, get_path_find)
 from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
 from real_wold import discretization_X, discretization_Y
@@ -136,10 +136,14 @@ def open_camera():
 
         frame_global = frame
 
+        if len(get_path_find()) > 0:
+            frame = draw_path(frame)
+
         if get_destination() is not None:
             destina = get_destination()
 
             cv2.imshow(windowName, draw_cross(frame, destina[0], destina[1]))
+
 
         if show_dis:
             cv2.imshow(windowName, draw_discretisation(frame))
