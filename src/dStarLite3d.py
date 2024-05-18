@@ -518,8 +518,8 @@ class DStarLite:
 
 
 def get_obs():
-    #obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    obstacles = get_obstacles()
+    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    # obstacles = get_obstacles()
     ox = []
     oy = []
     otheta = []
@@ -605,13 +605,13 @@ if __name__ == "__main__":
     rows, cols = croped_image.shape
     set_pixels_x(cols)
     set_pixels_y(rows)
-    set_cells_y(5)
-    set_cells_x(5)
+    set_cells_y(100)
+    set_cells_x(100)
     set_destination((2, 1))
     set_coordinate_aruco((599, 599, 180))
     obstacles = get_obstacles_position_grid_from_frame_test(imageP)
     # print(obstacles)
-    main()
+    dstar_algo()
 
 
 
