@@ -116,3 +116,9 @@ class Robot:
         return initial_orientation
         # must be defined with the orientation of the obstacle
         # could be easier to put a fixed value and stuck to it 
+        
+        
+    def set_var(self, var, value):
+        self.thymio[var] = value
+        
+        
