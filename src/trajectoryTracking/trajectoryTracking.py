@@ -183,11 +183,11 @@ def turnOrientation2(initialOrientation):
         
     if (initialOrientation == -90):
         robot.set_var("motor.left.target",0)
-        robot.set_var("motor.right.target",6)
+        robot.set_var("motor.right.target",12)
         
     if (initialOrientation == -45):
         robot.set_var("motor.left.target",0)
-        robot.set_var("motor.right.target",12)
+        robot.set_var("motor.right.target",9)
         
     return()
 
