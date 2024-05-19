@@ -194,6 +194,46 @@ def turnOrientation2(initialOrientation):
 
 
 
+def turnOrientation3(initialOrientation):
+    robot = Robot()
+    
+    if (initialOrientation == 0):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",9)
+        
+    if (initialOrientation == 45):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",6)
+       
+    if (initialOrientation == 90):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",3)
+        
+    if (initialOrientation == 135):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == 180):
+        robot.set_var("motor.left.target",3)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == -135):
+        robot.set_var("motor.left.target",6)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == -90):
+        robot.set_var("motor.left.target",9)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == -45):
+        robot.set_var("motor.left.target",12)
+        robot.set_var("motor.right.target",0)
+        
+    return()
+
+
+
+
 def main():
     
     """
