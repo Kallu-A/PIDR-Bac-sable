@@ -573,8 +573,7 @@ def add_angle_to_path(path):
     path[-1][2] = path[-2][2]
 
 
-def dstar_algo():
-
+def dstar_algo3D():
     sx, sy, rot = get_coordinate_aruco()
     print(sx, sy)
     gx, gy = get_destination()
@@ -611,7 +610,7 @@ if __name__ == "__main__":
     set_coordinate_aruco((599, 599, 180))
     obstacles = get_obstacles_position_grid_from_frame_test(imageP)
     # print(obstacles)
-    dstar_algo()
+    dstar_algo3D()
 
 
 

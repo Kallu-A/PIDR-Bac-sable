@@ -30,8 +30,8 @@ ratio_pixel_cm = 1.0  # ratio calculated to convert pixel to cm
 
 ## CAN BE CHANGED
 
-cells_x = 50  # number of cells wanted for x axis discretization
-cells_y = 50  # number of cells wanted for y axis discretization
+cells_x = 100  # number of cells wanted for x axis discretization
+cells_y = 100  # number of cells wanted for y axis discretization
 pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
 

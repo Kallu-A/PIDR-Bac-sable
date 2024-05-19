@@ -200,6 +200,9 @@ def open_camera():
             size_arena(framecopy.copy(), width, height)
 
         if key == ord('\r'):
+            x, y, z = get_coordinate_aruco()
+            print("video aruco coordinate : ", x, y, z)
+
             if get_destination is None:
                 print("Veuillez sélectionner une destination")
                 continue

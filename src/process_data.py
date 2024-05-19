@@ -3,7 +3,7 @@ import time
 from utility.movement_control import get_rotate_needed
 from global_var import get_destination, get_coordinate_aruco, get_thread, set_thread
 from utility.stoppable_process import StoppableProcess
-from dStarLite3d import dstar_algo
+from dStarLite import dstar_algo
 
 
 
@@ -23,7 +23,7 @@ def process():
 
 
 def runtime_loop():
-        dstar_algo()
+    dstar_algo()
     # while 1 == 1:
     #     destination = get_destination()
     #     coordinate = get_coordinate_aruco()

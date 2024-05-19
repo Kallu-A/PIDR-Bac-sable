@@ -338,12 +338,13 @@ def add_angle_to_path(path):
 def dstar_algo():
 
     sx, sy, rot = get_coordinate_aruco()
-    gx, gy = get_destination()
+    print("dStarLite coordinate aruco : ", get_coordinate_aruco())
 
+    gx, gy = get_destination()
     sx, sy = convert_pixel_to_case(int(sx), int(sy))
     gx, gy = convert_pixel_to_case(int(gx), int(gy))
-    print("Start : ", sx, sy)
-    print("Goal : ", gx, gy)
+    # print("Start : ", sx, sy)
+    # print("Goal : ", gx, gy)
     rot = float(rot)
 
     # TODO : change image path to frame
