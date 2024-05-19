@@ -56,6 +56,8 @@ def goStraightForward(speedLeft, speedRight):
     time.sleep(3) # the robot will got straight forward for 3 secondes
  
  
+ 
+ 
     """
     Ces fonctions vont servir à retrouver chaque mouvement de rotation du Thymio
     en connaissant sa position initiale et finale dans le cadran.
@@ -68,7 +70,10 @@ def goStraightForward(speedLeft, speedRight):
     - 5 (-135°)
     - 6 (-90°)
     - 7 (-45°) 
+    
+    Pour le moment, les vitesses sont encore à vérifier manuellement.
     """
+    
 def turnOrientation0(initialOrientation):
     robot = Robot()
     
@@ -108,6 +113,44 @@ def turnOrientation0(initialOrientation):
     
     
     
+def turnOrientation1(initialOrientation):
+    robot = Robot()
+    
+    if (initialOrientation == 0):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",3)
+        
+    if (initialOrientation == 45):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",0)
+       
+    if (initialOrientation == 90):
+        robot.set_var("motor.left.target",3)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == 135):
+        robot.set_var("motor.left.target",6)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == 180):
+        robot.set_var("motor.left.target",9)
+        robot.set_var("motor.right.target",0)
+        
+    if (initialOrientation == -135):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",12)
+        
+    if (initialOrientation == -90):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",9)
+        
+    if (initialOrientation == -45):
+        robot.set_var("motor.left.target",0)
+        robot.set_var("motor.right.target",6)
+        
+    return()
+
+
 
 
 def main():
