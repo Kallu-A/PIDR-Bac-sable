@@ -108,9 +108,7 @@ class DStarLite:
         return np.full((self.x_max, self.y_max), val)
 
     def is_obstacle(self, node: Node):
-        obstacle_x_equal = self.obstacles_xy[:, 0] == node.x
-        obstacle_y_equal = self.obstacles_xy[:, 1] == node.y
-        return (obstacle_x_equal & obstacle_y_equal).any()
+        return get_obstacles()[node.x][node.y]
 
     def c(self, node1: Node, node2: Node):
         if self.is_obstacle(node2):
@@ -299,11 +297,10 @@ class DStarLite:
 
 
 def get_obs():
-    #obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    obstacles = get_obstacles()
+    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    #obstacles = get_obstacles()
     ox = []
     oy = []
-    otheta = []
     for y in range(len(obstacles)):
         for x in range(len(obstacles[0])):
             if obstacles[y][x] == True:
@@ -343,9 +340,9 @@ def dstar_algo():
     gx, gy = get_destination()
     sx, sy = convert_pixel_to_case(int(sx), int(sy))
     gx, gy = convert_pixel_to_case(int(gx), int(gy))
-    # print("Start : ", sx, sy)
-    # print("Goal : ", gx, gy)
-    rot = float(rot)
+    print("Start : ", sx, sy)
+    print("Goal : ", gx, gy)
+    # rot = float(rot)
 
     # TODO : change image path to frame
     image_path = "../res/threshold/barre-rouge.jpg"
@@ -376,8 +373,6 @@ if __name__ == "__main__":
     set_cells_x(100)
     set_destination((2, 1))
     set_coordinate_aruco((599, 599, 180))
-    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    # print(obstacles)
     dstar_algo()
     end = time.time()
     print("algo time : ", end - start)  # around 4s for a 100 x 100 grid
