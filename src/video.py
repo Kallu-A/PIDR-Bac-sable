@@ -109,7 +109,6 @@ def fill_obstacle(frame):
 def open_camera():
     global destination, frame_global, thread, show_dis
     camera = cv2.VideoCapture(CAMERA_INDICE)  # opening the camera
-    set_path_find([(0,0,0), (1,1,1), (2,2,2), (2,3,2), (3,4,0),(20, 20,0)  ])
 
     width = camera.get(3)  # float `width`
     height = camera.get(4)  # float `height`
