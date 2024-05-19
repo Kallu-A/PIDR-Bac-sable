@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
 
-from global_var import path, dic, set_coordinate_aruco, get_path_find, set_begin_point, set_end_point, get_end_point, \
+from global_var import path, dic, set_coordinate_aruco, set_begin_point, set_end_point, get_end_point, \
     get_begin_point, set_pixels_y, set_pixels_x
 from utility.movement_control import get_point_from_angle
-from real_wold import convert_case_to_pixel
 
 color_path = (102, 73, 52)
 color = (85, 94, 235)
@@ -116,22 +115,6 @@ def size_arena(frame, width, height):
     set_pixels_y(get_end_point()[1] - get_begin_point()[1])
     set_pixels_x(get_end_point()[0] - get_begin_point()[0])
 
-
-def draw_path(img):
-    # draw a line between each point
-    (older_x, older_y) = (None, None)
-    path_find = get_path_find()
-    for index in range(0, len(path_find)):
-        i, j = path_find[index]
-        if index == 0:
-            x, y = convert_case_to_pixel(i, j)
-            older_x = x
-            older_y = y
-            continue
-        x, y = convert_case_to_pixel(i, j)
-        cv2.line(img, (older_x, older_y), (x, y), color_path, 3)
-        (older_x, older_y) = (x, y)
-    return img
 
 
 # convertion the rotation value in classic trigonometric value

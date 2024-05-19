@@ -3,17 +3,35 @@ from multiprocessing import freeze_support
 
 import cv2
 
-from aruco_function import detect_aruco, size_arena, draw_path
+from aruco_function import detect_aruco, size_arena, color_path
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, CAMERA_INDICE, set_end_point,
                         get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles, get_path_find)
+                        set_newly_obstacles, get_path_find, set_path_find)
 from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
-from real_wold import discretization_X, discretization_Y
+from real_wold import discretization_X, discretization_Y, convert_case_to_pixel
 from threshold import get_obstacles_position_grid_from_frame
 
 show_dis = False
+
+
+
+def draw_path(img):
+    # draw a line between each point
+    (older_x, older_y) = (None, None)
+    path_find = get_path_find()
+    for index in range(0, len(path_find)):
+        i, j, z = path_find[index]
+        if index == 0:
+            x, y = convert_case_to_pixel(i, j)
+            older_x = x
+            older_y = y
+            continue
+        x, y = convert_case_to_pixel(i, j)
+        cv2.line(img, (older_x, older_y), (x, y), color_path, 3)
+        (older_x, older_y) = (x, y)
+    return img
 
 # handle the click event
 def click_event(event, x, y, flags, params):
@@ -61,7 +79,7 @@ def draw_discretisation(frame):
             cv2.line(frame, (begin_point[0], int(dis_Y[i])), (end_point[0], int(dis_Y[i])), (0, 0, 0), 1)
 
     return fill_obstacle(frame)
-    #return frame
+    return frame
 
 
 def fill_obstacle(frame):
@@ -91,6 +109,7 @@ def fill_obstacle(frame):
 def open_camera():
     global destination, frame_global, thread, show_dis
     camera = cv2.VideoCapture(CAMERA_INDICE)  # opening the camera
+    set_path_find([(0,0,0), (1,1,1), (2,2,2), (2,3,2), (3,4,0),(20, 20,0)  ])
 
     width = camera.get(3)  # float `width`
     height = camera.get(4)  # float `height`
@@ -139,16 +158,18 @@ def open_camera():
         if len(get_path_find()) > 0:
             frame = draw_path(frame)
 
+
         if get_destination() is not None:
             destina = get_destination()
 
-            cv2.imshow(windowName, draw_cross(frame, destina[0], destina[1]))
+            frame = draw_cross(frame, destina[0], destina[1])
 
 
         if show_dis:
-            cv2.imshow(windowName, draw_discretisation(frame))
-        else:
-            cv2.imshow(windowName, frame)
+            frame = draw_discretisation(frame)
+
+        cv2.imshow(windowName, frame)
+
 
         if get_newly_obstacles():
             obstacles = get_obstacles()

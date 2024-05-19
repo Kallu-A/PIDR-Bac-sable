@@ -22,6 +22,14 @@ def threshold_from_frame(img):
     # Merge the mask and crop the red regions
     mask = cv2.bitwise_or(mask1, mask2)
     _, thresholded = cv2.threshold(mask, 128, 255, cv2.THRESH_BINARY)
+    height, width = thresholded.shape[:2]
+
+    cv2.line(thresholded, (0, 0), (width-1, 0), (255, 255, 255), 2)        # Top edge
+    cv2.line(thresholded, (0, 0), (0, height), (255, 255, 255), 2)       # Left edge
+    cv2.line(thresholded, (0, height-1), (width-1, height-1), (255, 255, 255), 2)  # Bottom edge
+    cv2.line(thresholded, (width-1, 0), (width-1, height-1), (255, 255, 255), 2)   # Right edge
+
+
     return thresholded
 
 
@@ -54,14 +62,14 @@ def remove_small_objects(binary_image, min_area=100):
 
 def runtime_calcul_loop(image, flags):
     # ROI of the image
-    image = image[get_begin_point()[1]:get_end_point()[1], get_begin_point()[0]:get_end_point()[0]]
+    image = image[get_begin_point()[1]:get_end_point()[1]+1, get_begin_point()[0]:get_end_point()[0]+1]
     # the percentage of which the box has to be filled before being count as a obstacle
     percent_box = 7
 
     dis_X = discretization_X(True)
     dis_Y = discretization_Y(True)
-    dis_X.append(0)
-    dis_Y.append(0)
+    dis_X.append(get_end_point()[0])
+    dis_Y.append(get_end_point()[1])
     threshold = ((dis_Y[1] - dis_Y[0]) + (dis_X[1] - dis_X[0]) * percent_box) / 100
     threshold_img = threshold_from_frame(image)
     size_robot = get_size_in_pixel_of_robot()
