@@ -13,41 +13,41 @@ by the dStarLite3d code and follow it using Thymio functions.
 def follow_trajectory(pathx, pathy, orientations):
     
     robot = Robot()
-    currentOrientation = robot.get_initial_orientation()
+    currentOrientation = 0
     
     """
     The trajectory will be a list of x_positions, y_positions and orientations.
     """
     
     for x, y, orientation in zip(pathx, pathy, orientations):
-        # We need to know in with position the robot needs to be between the 8 defined
+        # We need to know in which position the robot needs to be between the 8 defined
         if (orientation == 0):
-            turnOrientation0(currentOrientation)
+            turnOrientation0(robot,currentOrientation)
             
         if (orientation == 45):
-            turnOrientation1(currentOrientation)
+            turnOrientation1(robot,currentOrientation)
             
         if (orientation == 90):
-            turnOrientation2(currentOrientation)
+            turnOrientation2(robot,currentOrientation)
             
         if (orientation == 135):
-            turnOrientation3(currentOrientation)
+            turnOrientation3(robot,currentOrientation)
             
         if (orientation == 180):
-            turnOrientation4(currentOrientation) 
+            turnOrientation4(robot,currentOrientation) 
             
         if (orientation == -135):
-            turnOrientation5(currentOrientation)  
+            turnOrientation5(robot,currentOrientation)  
             
         if (orientation == -90):
-            turnOrientation6(currentOrientation)
+            turnOrientation6(robot,currentOrientation)
             
         if (orientation == -45):
-            turnOrientation7(currentOrientation)
+            turnOrientation7(robot,currentOrientation)
             
         currentOrientation = orientation
         
-        robot.move_robot(robot,x,y)  # to be replaced with goStraightForward when operational
+        goStraightForward(robot,50,50) # to be replaced with goStraightForward when operational
     
     """
     Once we have the coordinates one by one, we have to follow them.
@@ -55,13 +55,15 @@ def follow_trajectory(pathx, pathy, orientations):
     and then go the the x,y position.
     """
     
+    robot.disconnet()
+    
     return()
 
 
 
-def goStraightForward(speedLeft, speedRight):
+def goStraightForward(robot,speedLeft, speedRight):
     # Connection to our robot through Thymio Serial Port in the "Robot" folder
-    robot = Robot()
+    #robot = Robot()
     
     """ 
     We have to give different speeds to right and left motors in case they do not work the same way.
@@ -83,7 +85,7 @@ def goStraightForward(speedLeft, speedRight):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
  
  
@@ -105,8 +107,8 @@ def goStraightForward(speedLeft, speedRight):
     and less in the end so that it stops correctly.
     """
     
-def turnOrientation0(initialOrientation):
-    robot = Robot()
+def turnOrientation0(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",0)
@@ -145,15 +147,15 @@ def turnOrientation0(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
     
     
     
     
-def turnOrientation1(initialOrientation):
-    robot = Robot()
+def turnOrientation1(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",-30)
@@ -192,15 +194,15 @@ def turnOrientation1(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
 
 
 
-def turnOrientation2(initialOrientation):
-    robot = Robot()
+def turnOrientation2(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",-60)
@@ -239,15 +241,15 @@ def turnOrientation2(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
 
 
 
-def turnOrientation3(initialOrientation):
-    robot = Robot()
+def turnOrientation3(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",-90)
@@ -286,15 +288,15 @@ def turnOrientation3(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
 
 
 
-def turnOrientation4(initialOrientation):
-    robot = Robot()
+def turnOrientation4(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",-120)
@@ -333,15 +335,15 @@ def turnOrientation4(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
 
 
 
-def turnOrientation5(initialOrientation):
-    robot = Robot()
+def turnOrientation5(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",90)
@@ -380,15 +382,15 @@ def turnOrientation5(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
      
     return()
 
 
 
 
-def turnOrientation6(initialOrientation):
-    robot = Robot()
+def turnOrientation6(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",60)
@@ -427,15 +429,15 @@ def turnOrientation6(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
 
 
 
-def turnOrientation7(initialOrientation):
-    robot = Robot()
+def turnOrientation7(robot,initialOrientation):
+    #robot = Robot()
     
     if (initialOrientation == 0):
         robot.set_var("motor.left.target",30)
@@ -474,7 +476,7 @@ def turnOrientation7(initialOrientation):
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
     
-    robot.disconnet()
+    #robot.disconnet()
     
     return()
 
@@ -490,10 +492,19 @@ def main():
     """
     
     #pathx, pathy, orientations = algoTrajectory()
+    pathx = [1, 2, 3, 4]
+    pathy = [0, 1, 1, 2]
+    orientations = [-90, -135, 180, 0]
+    follow_trajectory(pathx, pathy, orientations)
     
-    #follow_trajectory(pathx, pathy, orientations)
-    #goStraightForward(50,50) # opérationnel
-    turnOrientation3(-45)
+    ''' test of several actions outside the follow_trajectory main one : working
+    robot = Robot()
+    goStraightForward(robot,50,50) # opérationnel
+    turnOrientation6(robot,180)
+    goStraightForward(robot,50,50)
+    turnOrientation3(robot,-90)
+    robot.disconnet()
+    '''
     
     
 
