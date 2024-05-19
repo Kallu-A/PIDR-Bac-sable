@@ -19,7 +19,31 @@ def follow_trajectory(pathx, pathy, orientations):
     """
     
     for x, y, orientation in zip(pathx, pathy, orientations):
-        rotate_robot(currentOrientation, orientation)
+        # We need to know in with position the robot needs to be between the 8 defined
+        if (orientation == 0):
+            turnOrientation0(currentOrientation)
+            
+        if (orientation == 45):
+            turnOrientation1(currentOrientation)
+            
+        if (orientation == 90):
+            turnOrientation2(currentOrientation)
+            
+        if (orientation == 135):
+            turnOrientation3(currentOrientation)
+            
+        if (orientation == 180):
+            turnOrientation4(currentOrientation) 
+            
+        if (orientation == -135):
+            turnOrientation5(currentOrientation)  
+            
+        if (orientation == -90):
+            turnOrientation6(currentOrientation)
+            
+        if (orientation == -45):
+            turnOrientation7(currentOrientation)
+            
         currentOrientation = orientation
         
         robot.move_robot(robot,x,y)  # to be replaced with goStraightForward when operational
@@ -53,15 +77,15 @@ def goStraightForward(speedLeft, speedRight):
     - a time for the duration of the program
     """
     
-    time.sleep(3) # the robot will got straight forward for 3 secondes
+    time.sleep(3) # the robot will go straight forward for 3 secondes
  
  
  
  
     """
-    Ces fonctions vont servir à retrouver chaque mouvement de rotation du Thymio
-    en connaissant sa position initiale et finale dans le cadran.
-    Il y a ainsi 7 positions possibles : 
+    These functions will give us the rotation mouvements of Thymio
+    knowing his initial and final position in the dial.
+    There are seven available positions : 
     - 0 (0°)
     - 1 (45°)
     - 2 (90°)
@@ -71,7 +95,9 @@ def goStraightForward(speedLeft, speedRight):
     - 6 (-90°)
     - 7 (-45°) 
     
-    Pour le moment, les vitesses sont encore à vérifier manuellement.
+    Currently, the speeds still have to be checked with a test.
+    Hint : the time.sleep could be inside each variation so that the robot sppeds more and the beginning
+    and less in the end so that it stops correctly.
     """
     
 def turnOrientation0(initialOrientation):
@@ -108,6 +134,8 @@ def turnOrientation0(initialOrientation):
     if (initialOrientation == -45):
         robot.set_var("motor.left.target",0)
         robot.set_var("motor.right.target",3)
+        
+    time.sleep(2)
         
     return()
     
@@ -149,6 +177,8 @@ def turnOrientation1(initialOrientation):
         robot.set_var("motor.left.target",0)
         robot.set_var("motor.right.target",6)
         
+    time.sleep(2)
+        
     return()
 
 
@@ -189,6 +219,8 @@ def turnOrientation2(initialOrientation):
         robot.set_var("motor.left.target",0)
         robot.set_var("motor.right.target",9)
         
+    time.sleep(2)
+         
     return()
 
 
@@ -229,6 +261,8 @@ def turnOrientation3(initialOrientation):
         robot.set_var("motor.left.target",12)
         robot.set_var("motor.right.target",0)
         
+    time.sleep(2)
+          
     return()
 
 
@@ -269,6 +303,8 @@ def turnOrientation4(initialOrientation):
         robot.set_var("motor.left.target",9)
         robot.set_var("motor.right.target",0)
         
+    time.sleep(2)
+          
     return()
 
 
@@ -309,6 +345,8 @@ def turnOrientation5(initialOrientation):
         robot.set_var("motor.left.target",6)
         robot.set_var("motor.right.target",0)
         
+    time.sleep(2)
+          
     return()
 
 
@@ -349,6 +387,8 @@ def turnOrientation6(initialOrientation):
         robot.set_var("motor.left.target",3)
         robot.set_var("motor.right.target",0)
         
+    time.sleep(2)
+          
     return()
 
 
@@ -389,6 +429,8 @@ def turnOrientation7(initialOrientation):
         robot.set_var("motor.left.target",0)
         robot.set_var("motor.right.target",0)
         
+    time.sleep(2)
+          
     return()
 
 
