@@ -3,7 +3,7 @@ import multiprocessing
 
 import cv2
 
-CAMERA_INDICE = 0
+CAMERA_INDICE = 2
 INVALID_VALUE = -404
 
 id = 100
@@ -15,8 +15,7 @@ frame_global = None
 size = 15
 destination = multiprocessing.Array(ctypes.c_int, [INVALID_VALUE, INVALID_VALUE])
 coordinate_aruco = multiprocessing.Array(ctypes.c_float, [INVALID_VALUE, INVALID_VALUE, INVALID_VALUE])
-path_find = []
-
+path_creator = multiprocessing.Manager()
 newly_obstacles = False  # if obstacles have been newly modifed
 newly_updated_obstacles = multiprocessing.Value('b', False)  # if obstacles have been newly modifed
 
@@ -37,25 +36,33 @@ pixels_y = 0  # number of pixels on y axis
 
 size_circle_cm = 3.9  # size of the circle in cm
 
-
+path_find =  multiprocessing.Array(ctypes.c_int, cells_x * cells_y * 3)
 
 thread = None
 obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
 
 
-if __name__ == '__main__':
-    manager = multiprocessing.Manager()
-    path_find = manager.list()
-
 
 def get_path_find():
     global path_find
-    return path_find
+    path_find_tab = []
+    for i in range(0, len(path_find), 3):
+        if path_find[i] == 0:
+            return path_find_tab
+        path_find_tab.append((path_find[i], path_find[i + 1], path_find[i + 2]))
+    return path_find_tab
 
 
 def set_path_find(path_found):
     global path_find
-    path_find = path_found
+    k = 0
+    for i in range(len(path_found)):
+        path_find[k] = path_found[i][0]
+        path_find[k + 1] = path_found[i][1]
+        path_find[k + 2] = path_found[i][2]
+        k += 3
+
+
 
 
 def get_thread():

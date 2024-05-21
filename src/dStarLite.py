@@ -293,12 +293,14 @@ class DStarLite:
         add_angle_to_path(path)
         print("path : ", get_path_find())
         set_path_find(path)
+        print("path : ", get_path_find())
         return True, pathx, pathy
 
 
 def get_obs():
-    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    #obstacles = get_obstacles()
+    #obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    obstacles = get_obstacles()
+    print(obstacles)
     ox = []
     oy = []
     for y in range(len(obstacles)):

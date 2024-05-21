@@ -154,6 +154,7 @@ def open_camera():
 
         frame_global = frame
 
+
         if len(get_path_find()) > 0:
             frame = draw_path(frame)
 
