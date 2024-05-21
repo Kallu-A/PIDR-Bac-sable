@@ -29,7 +29,7 @@ def draw_path(img):
             older_y = y
             continue
         x, y = convert_case_to_pixel(i, j)
-        cv2.line(img, (older_x, older_y), (x, y), color_path, 3)
+        cv2.line(img, (older_x, older_y), (x, y), color_path, 4)
         (older_x, older_y) = (x, y)
     return img
 
@@ -54,8 +54,8 @@ def click_event(event, x, y, flags, params):
 
 
 def draw_cross(frame, x, y):
-    cv2.line(frame, (x - size, y - size), (x + size, y + size), (0, 0, 255), 5)
-    cv2.line(frame, (x - size, y + size), (x + size, y - size), (0, 0, 255), 5)
+    cv2.line(frame, (x - size, y - size), (x + size, y + size), (0, 255, 0), 5)
+    cv2.line(frame, (x - size, y + size), (x + size, y - size), (0, 255, 0), 5)
     return frame
 
 def get_indice_line():
@@ -155,9 +155,12 @@ def open_camera():
         frame_global = frame
 
 
-        if len(get_path_find()) > 0:
-            frame = draw_path(frame)
 
+
+
+
+        if show_dis:
+            frame = draw_discretisation(frame)
 
         if get_destination() is not None:
             destina = get_destination()
@@ -165,8 +168,9 @@ def open_camera():
             frame = draw_cross(frame, destina[0], destina[1])
 
 
-        if show_dis:
-            frame = draw_discretisation(frame)
+        if len(get_path_find()) > 0:
+            frame = draw_path(frame)
+
 
         cv2.imshow(windowName, frame)
 
