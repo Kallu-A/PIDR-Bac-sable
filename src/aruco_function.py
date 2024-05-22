@@ -5,7 +5,7 @@ from global_var import path, dic, set_coordinate_aruco, set_begin_point, set_end
     get_begin_point, set_pixels_y, set_pixels_x
 from utility.movement_control import get_point_from_angle
 
-color_path = (102, 73, 52)
+color_path = (20, 255, 255)
 color = (85, 94, 235)
 
 

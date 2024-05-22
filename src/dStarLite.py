@@ -108,7 +108,9 @@ class DStarLite:
         return np.full((self.x_max, self.y_max), val)
 
     def is_obstacle(self, node: Node):
-        return get_obstacles()[node.x][node.y]
+        obstacle_x_equal = self.obstacles_xy[:, 0] == node.x
+        obstacle_y_equal = self.obstacles_xy[:, 1] == node.y
+        return (obstacle_x_equal & obstacle_y_equal).any()
 
     def c(self, node1: Node, node2: Node):
         if self.is_obstacle(node2):
@@ -293,12 +295,14 @@ class DStarLite:
         add_angle_to_path(path)
         print("path : ", get_path_find())
         set_path_find(path)
+        print("path : ", get_path_find())
         return True, pathx, pathy
 
 
 def get_obs():
-    obstacles = get_obstacles_position_grid_from_frame_test(imageP)
-    #obstacles = get_obstacles()
+    #obstacles = get_obstacles_position_grid_from_frame_test(imageP)
+    obstacles = get_obstacles()
+    print(obstacles)
     ox = []
     oy = []
     for y in range(len(obstacles)):
