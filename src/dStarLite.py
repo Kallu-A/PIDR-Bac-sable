@@ -337,7 +337,7 @@ def add_angle_to_path(path):
 def dstar_algo():
 
     sx, sy, rot = get_coordinate_aruco()
-    print("dStarLite coordinate aruco : ", get_coordinate_aruco())
+    print("dStarLite coordinate aruco : ", get_coordinate_aruco()[0], get_coordinate_aruco()[1], get_coordinate_aruco()[2])
 
     gx, gy = get_destination()
     sx, sy = convert_pixel_to_case(int(sx), int(sy))

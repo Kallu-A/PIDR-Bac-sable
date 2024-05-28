@@ -37,7 +37,6 @@ def detect_aruco(img):
     camera_matrix = np.load('src/calibration/2cameraMatrice.npy')
     dist_coeffs = np.load('src/calibration/2distorsionVecteur.npy')
 
-    set_coordinate_aruco(None)
     if ids is not None and len(ids) > 0:
         for i in range(0, len(ids)):
 
@@ -84,20 +83,28 @@ def detect_aruco(img):
 def size_arena(frame, width, height):
     corners, ids, rejectedImgPoints = cv2.aruco.detectMarkers(frame, dic)
     if ids is not None and len(ids):
-        if len(ids) == 1 or len(ids) > 2:
+        if len(ids) == 1 or len(ids) > 3:
             print("Erreur: il faut 2 code aruco")
             return
+        i_first = 0
+        i_second = 1
+        if ids[0] == 100:
+            i_first = 1
+            i_second = 2
+        if ids[1] == 100:
+            i_first = 0
+            i_second = 2
 
-        i = 0
-        first_x = int((corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
+
+
+        first_x = int((corners[i_first][0][0][0] + corners[i_first][0][1][0] + corners[i_first][0][2][0] + corners[i_first][0][3][
             0]) / 4)  # X coordinate of marker's center
-        first_y = int((corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
+        first_y = int((corners[i_first][0][0][1] + corners[i_first][0][1][1] + corners[i_first][0][2][1] + corners[i_first][0][3][
             1]) / 4)  # Y coordinate of marker's center
 
-        i = 1
-        second_x = int((corners[i][0][0][0] + corners[i][0][1][0] + corners[i][0][2][0] + corners[i][0][3][
+        second_x = int((corners[i_second][0][0][0] + corners[i_second][0][1][0] + corners[i_second][0][2][0] + corners[i_second][0][3][
             0]) / 4)  # X coordinate of marker's center
-        second_y= int((corners[i][0][0][1] + corners[i][0][1][1] + corners[i][0][2][1] + corners[i][0][3][
+        second_y= int((corners[i_second][0][0][1] + corners[i_second][0][1][1] + corners[i_second][0][2][1] + corners[i_second][0][3][
             1]) / 4)  # Y coordinate of marker's center
 
         set_begin_point((min(first_x, second_x), min(first_y, second_y)) )

@@ -3,7 +3,7 @@ import multiprocessing
 
 import cv2
 
-CAMERA_INDICE = 2
+CAMERA_INDICE = 3
 INVALID_VALUE = -404
 
 id = 100

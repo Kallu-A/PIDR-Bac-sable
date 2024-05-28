@@ -7,7 +7,7 @@ from aruco_function import detect_aruco, size_arena, color_path
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, CAMERA_INDICE, set_end_point,
                         get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles, get_path_find, set_path_find)
+                        set_newly_obstacles, get_path_find, set_path_find, set_coordinate_aruco)
 from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
 from process_trajectory_tracking import process_tracking
@@ -110,7 +110,7 @@ def fill_obstacle(frame):
 def open_camera():
     global destination, frame_global, thread, show_dis
     camera = cv2.VideoCapture(CAMERA_INDICE)  # opening the camera
-
+    set_coordinate_aruco(None)
     width = camera.get(3)  # float `width`
     height = camera.get(4)  # float `height`
     set_end_point((int(width), int(height)))
@@ -193,7 +193,7 @@ def open_camera():
 
         if time.time() - start_time >= 5:
             # Perform the operation every 5 seconds
-            get_obstacles_position_grid_from_frame(framecopy.copy(), False)
+            #get_obstacles_position_grid_from_frame(framecopy.copy(), False)
             start_time = time.time()
 
         key = cv2.waitKey(1) & 0xFF
@@ -202,9 +202,6 @@ def open_camera():
             show_dis = not show_dis
 
         if key == ord('a'):
-            if get_thread() is not None:
-                print("Impossible de redéfinir l'arène pendant que l'algorithme tourne")
-                continue
             size_arena(framecopy.copy(), width, height)
 
         if key == ord('\r'):

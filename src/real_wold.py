@@ -46,13 +46,7 @@ def convert_pixel_to_case(x, y):
     tabY = discretization_Y()
     i = 0
     j = 0
-    if x >= pixelsX:
-        print("Pixel x not in the image")
-        return
 
-    if y >= pixelsY:
-        print("Pixel y not in the image")
-        return
 
     while not tabX[i] <= x < tabX[i + 1]:
         i += 1
