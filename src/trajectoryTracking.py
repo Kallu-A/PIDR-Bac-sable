@@ -11,7 +11,7 @@ We need a function that will take the trajectory given
 by the dStarLite3d code and follow it using Thymio functions.
 """ 
 
-def follow_trajectory(pathx, pathy, orientations):
+def follow_trajectory(pathx, pathy, orientations, size):
     robot = Robot()
     currentOrientation = get_coordinate_aruco()[2]
     #currentOrientation = 0
@@ -20,6 +20,7 @@ def follow_trajectory(pathx, pathy, orientations):
     print("pathx : ",pathx)
     print("pathy : ",pathy)
     print("orientations : ",orientations)
+    print("size : ",size)
 
     """
     The trajectory will be a list of x_positions, y_positions and orientations.
