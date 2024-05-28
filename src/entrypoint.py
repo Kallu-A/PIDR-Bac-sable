@@ -4,7 +4,7 @@ from robot import Robot
 from video import open_camera
 
 if __name__ == '__main__':
-    robot = Robot() # init the robot and try to connect to it
+    #robot = Robot() # init the robot and try to connect to it
     """robot.move_robot(100, 100)
     time.sleep(1)
     robot.stop_robot()

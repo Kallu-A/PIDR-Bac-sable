@@ -12,11 +12,10 @@ by the dStarLite3d code and follow it using Thymio functions.
 """ 
 
 def follow_trajectory(pathx, pathy, orientations):
-    
     robot = Robot()
     currentOrientation = get_coordinate_aruco()[2]
     #currentOrientation = 0
-    turnOrientation(robot,orientations[0],currentOrientation)
+    #turnOrientation(robot,orientations[0],currentOrientation)
     print("currentOrientation : ",currentOrientation)
     print("pathx : ",pathx)
     print("pathy : ",pathy)
@@ -57,7 +56,7 @@ def follow_trajectory(pathx, pathy, orientations):
         
         currentOrientation = orientation
         
-        goStraightForward(robot,20,20) # to be replaced with goStraightForward when operational
+        goStraightForward(robot,60,60) # to be replaced with goStraightForward when operational
     
     """
     Once we have the coordinates one by one, we have to follow them.
@@ -90,7 +89,7 @@ def goStraightForward(robot,speedLeft, speedRight):
     - a time for the duration of the program
     """
     
-    time.sleep(1) # the robot will go straight forward for 3 secondes
+    time.sleep(0.5) # the robot will go straight forward for 3 secondes
     
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
@@ -747,9 +746,9 @@ def main():
     """
     
     #pathx, pathy, orientations = algoTrajectory()
-    pathx = [1, 2, 3, 4, 5, 6, 6, 6, 7]
-    pathy = [0, 1, 1, 2, 2, 2, 3, 4, 4]
-    orientations = [45, 135, -45, -90, 180, 45, 0, 135, 0]
+    pathx = [77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12]
+    pathy = [39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 54, 54, 54, 54, 54, 54, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]
+    orientations = [180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, 180, 180, 180, 180, 180, 180, 180, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135, -135]
     #set_coordinate_aruco((2, 2, 20))
     follow_trajectory(pathx, pathy, orientations)
     
