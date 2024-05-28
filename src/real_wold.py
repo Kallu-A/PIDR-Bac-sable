@@ -1,3 +1,5 @@
+import math
+
 from global_var import set_coordinate_aruco, get_coordinate_aruco, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x, get_begin_point, get_end_point, set_end_point, set_begin_point
 
 
@@ -165,6 +167,15 @@ def is_robot_in_case(case_x_goal, case_y_goal):
     current_position_x, current_position_y, current_position_rot = get_coordinate_aruco()
     position_case_x, position_case_y = convert_pixel_to_case(int(current_position_x), int(current_position_y))
     return position_case_x == case_x_goal and position_case_y == case_y_goal
+
+
+def is_robot_too_far(case_x_goal, case_y_goal):
+    current_position_x, current_position_y, rot = get_coordinate_aruco()
+    position_case_x, position_case_y = convert_pixel_to_case(int(current_position_x), int(current_position_y))
+    return math.sqrt((position_case_x - case_x_goal) * (position_case_x - case_x_goal)
+                     + (position_case_y - case_y_goal) * (position_case_y - case_y_goal)) >= 2
+
+
 
 
 if __name__ == "__main__":
