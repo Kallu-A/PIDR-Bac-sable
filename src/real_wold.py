@@ -1,4 +1,4 @@
-from global_var import get_path_find, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x, get_begin_point, get_end_point, set_end_point, set_begin_point
+from global_var import set_coordinate_aruco, get_coordinate_aruco, get_pixels_xy, get_cells_xy, set_cells_x, set_cells_y, set_pixels_y, set_pixels_x, get_begin_point, get_end_point, set_end_point, set_begin_point
 
 
 # convert the case i,j (in meters) in coordinate (middle pixel) x,y in the image (pixel)
@@ -159,6 +159,12 @@ def discretization_table():
     cellsX, cellsY = get_cells_xy()
     table = [[False for col in range(cellsX)] for row in range(cellsY)]
     return table
+
+
+def is_robot_in_case(case_x_goal, case_y_goal):
+    current_position_x, current_position_y, current_position_rot = get_coordinate_aruco()
+    position_case_x, position_case_y = convert_pixel_to_case(current_position_x, current_position_y)
+    return position_case_x == case_x_goal and position_case_y == case_y_goal
 
 
 if __name__ == "__main__":
