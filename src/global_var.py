@@ -56,6 +56,11 @@ def get_path_find():
 def set_path_find(path_found):
     global path_find
     k = 0
+    if path_found is None:
+        for i in range(len(path_find)):
+            path_find[i] = 0
+        return
+
     for i in range(len(path_found)):
         path_find[k] = path_found[i][0]
         path_find[k + 1] = path_found[i][1]

@@ -10,6 +10,7 @@ from global_var import (size, windowName, get_coordinate_aruco, set_destination,
                         set_newly_obstacles, get_path_find, set_path_find)
 from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
+from process_trajectory_tracking import process_tracking
 from real_wold import discretization_X, discretization_Y, convert_case_to_pixel
 from threshold import get_obstacles_position_grid_from_frame
 
@@ -128,6 +129,8 @@ def open_camera():
     print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
     print("Pour définir la taille de l'arène appuyer sur 'a'")
     print("Pour configurer le ratio pixel / cm placer le témoin et appuyer sur 'r'")
+    print("Pour suivre la trajectoire appuyer sur 'f'")
+
 
 
     cv2.namedWindow(windowName)
@@ -145,6 +148,8 @@ def open_camera():
             print("Erreur : impossible d'ouvrir le flux vidéo")
             break
 
+
+
         framecopy = frame.copy()
 
         frame = exec_cam(frame)
@@ -153,8 +158,6 @@ def open_camera():
 
 
         frame_global = frame
-
-
 
 
 
@@ -208,7 +211,7 @@ def open_camera():
             x, y, z = get_coordinate_aruco()
             print("video aruco coordinate : ", x, y, z)
 
-            if get_destination is None:
+            if get_destination() is None:
                 print("Veuillez sélectionner une destination")
                 continue
 
@@ -216,11 +219,17 @@ def open_camera():
                 print("Aucun robot détecté")
                 continue
 
+            set_path_find(None)
             process()
 
         if key == ord('r'):
             calculate_px_mm_ratio(framecopy.copy())
 
+        if key == ord('f'):
+            if get_path_find() is None:
+                print("Aucune trajectoire à suivre")
+                continue
+            process_tracking()
 
         if key == ord('q'):
             if get_thread() is not None:

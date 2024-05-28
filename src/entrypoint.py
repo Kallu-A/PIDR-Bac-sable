@@ -1,7 +1,7 @@
 import time
 
 from robot import Robot
-from src.video import open_camera
+from video import open_camera
 
 if __name__ == '__main__':
     robot = Robot() # init the robot and try to connect to it

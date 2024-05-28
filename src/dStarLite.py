@@ -291,9 +291,7 @@ class DStarLite:
         path = []
         for i in range(len(pathx)):
             path.append([pathx[i], pathy[i], 0])
-        set_path_find(path)
         add_angle_to_path(path)
-        print("path : ", get_path_find())
         set_path_find(path)
         print("path : ", get_path_find())
         return True, pathx, pathy

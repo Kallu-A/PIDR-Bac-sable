@@ -4,6 +4,7 @@ from robot import Robot
 #from thymioserial import Thymio
 import time
 
+from global_var import get_coordinate_aruco, set_coordinate_aruco
 
 """ 
 We need a function that will take the trajectory given
@@ -13,8 +14,14 @@ by the dStarLite3d code and follow it using Thymio functions.
 def follow_trajectory(pathx, pathy, orientations):
     
     robot = Robot()
-    currentOrientation = 0
-    
+    currentOrientation = get_coordinate_aruco()[2]
+    #currentOrientation = 0
+    turnOrientation(robot,orientations[0],currentOrientation)
+    print("currentOrientation : ",currentOrientation)
+    print("pathx : ",pathx)
+    print("pathy : ",pathy)
+    print("orientations : ",orientations)
+
     """
     The trajectory will be a list of x_positions, y_positions and orientations.
     """
@@ -50,7 +57,7 @@ def follow_trajectory(pathx, pathy, orientations):
         
         currentOrientation = orientation
         
-        goStraightForward(robot,50,50) # to be replaced with goStraightForward when operational
+        goStraightForward(robot,20,20) # to be replaced with goStraightForward when operational
     
     """
     Once we have the coordinates one by one, we have to follow them.
@@ -83,7 +90,7 @@ def goStraightForward(robot,speedLeft, speedRight):
     - a time for the duration of the program
     """
     
-    time.sleep(2) # the robot will go straight forward for 3 secondes
+    time.sleep(1) # the robot will go straight forward for 3 secondes
     
     robot.set_var("motor.left.target", 0)
     robot.set_var("motor.right.target", 0)
@@ -743,6 +750,7 @@ def main():
     pathx = [1, 2, 3, 4, 5, 6, 6, 6, 7]
     pathy = [0, 1, 1, 2, 2, 2, 3, 4, 4]
     orientations = [45, 135, -45, -90, 180, 45, 0, 135, 0]
+    #set_coordinate_aruco((2, 2, 20))
     follow_trajectory(pathx, pathy, orientations)
     
     ''' test of several actions outside the follow_trajectory main one : working
