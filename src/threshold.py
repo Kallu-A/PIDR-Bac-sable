@@ -16,11 +16,12 @@ def threshold_from_frame(img):
     assert img_hsv is not None, "file could not be read, check with os.path.exists()"
 
     # Gen lower mask (0-5) and upper mask (175-180) of RED
-    mask1 = cv2.inRange(img_hsv, (1, 100, 100), (4, 255, 255))
-    mask2 = cv2.inRange(img_hsv, (176, 100, 100), (179, 255, 255))
+    #mask1 = cv2.inRange(img_hsv, (1, 100, 100), (4, 255, 255))
+    mask2 = cv2.inRange(img_hsv, (100, 100, 100), (130, 255, 255))
 
     # Merge the mask and crop the red regions
-    mask = cv2.bitwise_or(mask1, mask2)
+    #mask = cv2.bitwise_or(mask1, mask2)
+    mask = mask2
     _, thresholded = cv2.threshold(mask, 128, 255, cv2.THRESH_BINARY)
     height, width = thresholded.shape[:2]
 
