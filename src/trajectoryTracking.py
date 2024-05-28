@@ -55,7 +55,7 @@ def follow_trajectory(pathx, pathy, orientations):
         turnOrientation(robot,orientation,currentOrientation)
         
         currentOrientation = orientation
-        
+        get_coordinate_aruco()
         goStraightForward(robot,60,60) # to be replaced with goStraightForward when operational
     
     """
