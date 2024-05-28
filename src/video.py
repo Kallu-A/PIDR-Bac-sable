@@ -7,11 +7,12 @@ from aruco_function import detect_aruco, size_arena, color_path
 from global_var import (size, windowName, get_coordinate_aruco, set_destination, get_destination, get_thread,
                         set_thread, set_pixels_x, set_pixels_y, get_obstacles, CAMERA_INDICE, set_end_point,
                         get_begin_point, get_end_point, get_newly_obstacles,
-                        set_newly_obstacles, get_path_find, set_path_find, set_coordinate_aruco)
+                        set_newly_obstacles, get_path_find, set_path_find, set_coordinate_aruco, get_thread_follow)
 from pixel_mm_finder import calculate_px_mm_ratio
 from process_data import process
 from process_trajectory_tracking import process_tracking
 from real_wold import discretization_X, discretization_Y, convert_case_to_pixel
+from robot import Robot
 from threshold import get_obstacles_position_grid_from_frame
 
 show_dis = False
@@ -128,6 +129,7 @@ def open_camera():
     print("Pour afficher/cacher la discrétisation appuyer sur 'd'")
     print("Pour capturer une frame (détection obstacle) appuyer sur 'o'")
     print("Pour définir la taille de l'arène appuyer sur 'a'")
+    print("Pour redéfinir le chemin appuyer sur 'b'")
     print("Pour configurer le ratio pixel / cm placer le témoin et appuyer sur 'r'")
     print("Pour suivre la trajectoire appuyer sur 'f'")
 
@@ -177,7 +179,6 @@ def open_camera():
 
         cv2.imshow(windowName, frame)
 
-
         if get_newly_obstacles():
             obstacles = get_obstacles()
             for i in range(len(obstacles)):
@@ -217,6 +218,17 @@ def open_camera():
                 continue
 
             set_path_find(None)
+            process()
+
+        if key == ord('b'):
+            set_path_find(None)
+            if get_thread_follow() is None:
+                print("Aucun recalcul à réaliser")
+                continue
+            th = get_thread_follow()
+            th.terminate()
+            Robot().move_robot(0, 0)
+            Robot().disconnet()
             process()
 
         if key == ord('r'):

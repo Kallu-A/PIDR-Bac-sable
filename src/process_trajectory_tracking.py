@@ -1,11 +1,13 @@
 import multiprocessing
 
-from global_var import get_path_find
+from global_var import get_path_find, set_thread_follow
 from trajectoryTracking import follow_trajectory
 
 
 def process_tracking():
-    multiprocessing.Process(target=runtime_loop_tracking, args=()).start()
+    proc = multiprocessing.Process(target=runtime_loop_tracking, args=())
+    set_thread_follow(proc)
+    proc.start()
 
 def runtime_loop_tracking():
     path = get_path_find()

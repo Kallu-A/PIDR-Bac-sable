@@ -16,20 +16,29 @@ by the dStarLite3d code and follow it using Thymio functions.
 def follow_trajectory(pathx, pathy, orientations, size):
     robot = Robot()
     currentOrientation = get_coordinate_aruco()[2]
-    eps = 0.1
-    while not currentOrientation < eps and not currentOrientation > -eps:
-        robot.set_var("motor.left.target", 20)
-        robot.set_var("motor.right.target", -20)
-        currentOrientation = get_coordinate_aruco()[2]
-    #currentOrientation = 0
+    target = orientations[0]
+    print(target)
+    eps = 2.2
+    if target >= 0:
+        robot.set_var("motor.left.target", 4)
+        robot.set_var("motor.right.target", -4)
+        while not (currentOrientation >= target - eps and currentOrientation <= target + eps):
+            currentOrientation = get_coordinate_aruco()[2]
+    else:
+        while not (currentOrientation <= target + eps and currentOrientation >= target - eps):
+            currentOrientation = get_coordinate_aruco()[2]
+
     #turnOrientation(robot,orientations[0],currentOrientation)
+    print("sortie : " + str(currentOrientation))
 
-
+    robot.move_robot(-0, 0)
+    time.sleep(1)
     """
     The trajectory will be a list of x_positions, y_positions and orientations.
     """
     
     for x, y, orientation, size in zip(pathx, pathy, orientations, size):
+        print(x, y, orientation, size)
         # We need to know in which position the robot needs to be between the 8 defined
         '''
         if (orientation == 0):
@@ -56,15 +65,16 @@ def follow_trajectory(pathx, pathy, orientations, size):
         if (orientation == -45):
             turnOrientation7(robot,currentOrientation)
         '''
+        print("begin orientation")
         turnOrientation(robot, orientation, currentOrientation)
         print(is_robot_in_case(x, y))
         currentOrientation = orientation
         xr = get_coordinate_aruco()[0]
         yr = get_coordinate_aruco()[1]
         while not is_robot_in_case(x, y):
-            goStraightForward(robot, 60, 60)
-            xr = get_coordinate_aruco()[0]
-            yr = get_coordinate_aruco()[1]
+            robot.move_robot(60, 60)
+            time.sleep(1.2)
+        robot.move_robot(0, 0)
     """
     Once we have the coordinates one by one, we have to follow them.
     We first get the orientation needed,
@@ -98,9 +108,7 @@ def goStraightForward(robot, speedLeft, speedRight):
     
     time.sleep(0.5) # the robot will go straight forward for 3 secondes
     
-    robot.set_var("motor.left.target", 0)
-    robot.set_var("motor.right.target", 0)
-    
+
     #robot.disconnet()
     return()
     
@@ -127,8 +135,8 @@ def turnOrientation(robot,goalOrientation,currentOrientation):
         robot.set_var("motor.right.target",0)
         
     if (goalOrientation-currentOrientation == 45 or goalOrientation-currentOrientation == -315):
-        robot.set_var("motor.left.target",-30)
-        robot.set_var("motor.right.target",30)
+        robot.set_var("motor.left.target",-32)
+        robot.set_var("motor.right.target",32)
         time.sleep(4)
         robot.set_var("motor.left.target", 0)
         robot.set_var("motor.right.target", 0)

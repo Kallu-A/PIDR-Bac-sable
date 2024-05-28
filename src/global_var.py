@@ -3,7 +3,7 @@ import multiprocessing
 
 import cv2
 
-CAMERA_INDICE = 3
+CAMERA_INDICE = 2
 INVALID_VALUE = -404
 
 id = 100
@@ -29,8 +29,8 @@ ratio_pixel_cm = 1.0  # ratio calculated to convert pixel to cm
 
 ## CAN BE CHANGED
 
-cells_x = 100  # number of cells wanted for x axis discretization
-cells_y = 100  # number of cells wanted for y axis discretization
+cells_x = 80  # number of cells wanted for x axis discretization
+cells_y = 80  # number of cells wanted for y axis discretization
 pixels_x = 0  # number of pixels on x axis
 pixels_y = 0  # number of pixels on y axis
 
@@ -39,6 +39,7 @@ size_circle_cm = 3.9  # size of the circle in cm
 path_find =  multiprocessing.Array(ctypes.c_int, cells_x * cells_y * 3)
 
 thread = None
+thread_follow = None
 obstacles = multiprocessing.Array(ctypes.c_bool, cells_x * cells_y)
 
 
@@ -239,3 +240,11 @@ def get_ratio_pixel_cm():
 def set_ratio_pixel_cm(value):
     global ratio_pixel_cm
     ratio_pixel_cm = value
+
+def get_thread_follow():
+    global thread_follow
+    return thread_follow
+
+def set_thread_follow(value):
+    global thread_follow
+    thread_follow = value

@@ -158,7 +158,9 @@ def discretization_table():
 def is_robot_in_case(case_x_goal, case_y_goal):
     current_position_x, current_position_y, current_position_rot = get_coordinate_aruco()
     position_case_x, position_case_y = convert_pixel_to_case(int(current_position_x), int(current_position_y))
-    return position_case_x == case_x_goal and position_case_y == case_y_goal
+    decal = 1
+    #return position_case_x == case_x_goal and position_case_y == case_y_goal
+    return position_case_x in range(case_x_goal - decal, case_x_goal + decal) and position_case_y in range(case_y_goal - decal, case_y_goal + decal)
 
 
 if __name__ == "__main__":
