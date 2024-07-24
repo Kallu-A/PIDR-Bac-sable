@@ -1,6 +1,9 @@
 # PIDR Project "Bac a sable"
 
 ## Setup Project 
+### Materials
+Camera and a robot thymio
+
 ### Dependencies
 https://github.com/epfl-mobots/thymio-python
 - Python 3 & pip
